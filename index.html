@@ -11,19 +11,24 @@
   </head>
   <body>
     <h1>Rating History</h1>
-    <font color="red">TopCoder ID:</font>
-    <input type="text" id="handle_topcoder"><br>
-    <font color="blue">CodeForces ID:</font>
-    <input type="text" id="handle_codeforces"><br>
-    <font color="green">Atcoder ID:</font>
-    <input type="text" id="handle_atcoder"><br>
-    <input type="button" onclick="getData()" value="send">
-    <br>
+    <form action="./index.html" method="get" name="wrapper">
+      <font color="red">TopCoder ID:</font>
+      <input type="text" id="handle_topcoder"   name="handle_topcoder"><br>
+      <font color="blue">CodeForces ID:</font>
+      <input type="text" id="handle_codeforces" name="handle_codeforces"><br>
+      <font color="green">Atcoder ID:</font>
+      <input type="text" id="handle_atcoder"    name="handle_atcoder"><br>
+      <font color="black">AOJ ID:</font>
+      <input type="text" id="handle_aoj"        name="handle_aoj"><br>
+      <input type="submit" value="send">
+      <br>
+    </form>
     <div id="rating_topcoder"></div>
     <div id="rating_codeforces"></div>
     <div id="rating_atcoder"></div>
 
     <div id="graphs"></div>
+    <div id="solved"></div>
     
   </body>
 </html>
