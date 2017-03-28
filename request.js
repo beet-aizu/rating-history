@@ -121,7 +121,7 @@ function drawGraphs(){
     for(i = 0; history_topcoder != undefined
 	&& i < history_topcoder.History.length; i++){
 	list_topcoder.push({
-	    "x": new Date(history_topcoder.History[i].date).getTime() / 1000,
+	    "x": new Date(history_topcoder.History[i].date.replace(/\./g,"/")).getTime() / 1000,
 	    "y": history_topcoder.History[i].rating
 	});
     }
