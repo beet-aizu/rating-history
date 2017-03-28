@@ -18,7 +18,7 @@ function getData(){
 function getTopCoder(){
     var handle = document.getElementById("handle_topcoder").value;
     //if(handle == "") handle = "beet";
-    var url = "http://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
+    var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
     var request = new XMLHttpRequest();
     request.open('GET', url);
     request.onreadystatechange = function () {
@@ -39,7 +39,7 @@ function getTopCoder(){
 function getCodeForces(){
     var handle = document.getElementById("handle_codeforces").value;
     //if(handle == "") handle = "beet";
-    var url = "http://codeforces.com/api/user.rating?handle=" + handle;
+    var url = "https://codeforces.com/api/user.rating?handle=" + handle;
     var request = new XMLHttpRequest();
     request.open('GET', url);
     request.onreadystatechange = function () {
