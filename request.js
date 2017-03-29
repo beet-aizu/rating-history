@@ -395,12 +395,24 @@ function drawTable(){
        solved_codeforces < 0 ||
        solved_atcoder    < 0 ||
        solved_aoj        < 0 ) return;
+
+    if(solved_topcoder   == undefined ||
+       solved_topcoder   == null) solved_topcoder = 0;
+    if(solved_codeforces == undefined ||
+       solved_codeforces == null) solved_codeforces = 0;
+    if(solved_atcoder    == undefined ||
+       solved_atcoder    == null) solved_atcoder = 0;
+    if(solved_aoj        == undefined ||
+       solved_aoj        == null) solved_aoj = 0;
     
     solved_sum = 0;
     solved_sum += solved_topcoder;
     solved_sum += solved_codeforces;
     solved_sum += solved_atcoder;
     solved_sum += solved_aoj;
+
+    
+    
     document.getElementById("solved").innerHTML =
 	"Solved: "
 	+"<table border=\"1px\">"
