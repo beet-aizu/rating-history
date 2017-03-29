@@ -12,6 +12,10 @@ var solved_codeforces;
 var solved_atcoder;
 var solved_aoj;
 var solved_sum;
+
+// risky
+var tmp;
+
 function getData(){
     d3.select("#graphs").selectAll("svg").remove();
     history_topcoder = undefined;
@@ -63,8 +67,11 @@ function getCodeForces(){
 	return;
     }
     var url = "http://codeforces.com/api/user.rating?handle=" + handle;
+    var query = "select * from json where url = '" + url + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
+
     var request = new XMLHttpRequest();
-    request.open('GET', url);
+    request.open('GET', yql);
     request.onreadystatechange = function () {
 	if (request.readyState != 4) {
             // リクエスト中
@@ -139,10 +146,10 @@ function drawGraphs(){
 	});
     }
     for(i = 0; history_codeforces != undefined
-	&& i < history_codeforces.result.length; i++){
+	&& i < history_codeforces.query.results.json.result.length; i++){
 	list_codeforces.push({
-	    "x": history_codeforces.result[i].ratingUpdateTimeSeconds,
-	    "y": history_codeforces.result[i].newRating
+	    "x": history_codeforces.query.results.json.result[i].ratingUpdateTimeSeconds,
+	    "y": history_codeforces.query.results.json.result[i].newRating
 	});
     }
     for(i = 0; history_atcoder != undefined
@@ -288,8 +295,11 @@ function getSolvedCF(){
 	return;
     }
     var url = "http://codeforces.com/api/user.status?handle=" + handle;
+    var query = "select * from json where url = '" + url + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
+
     var request = new XMLHttpRequest();
-    request.open('GET', url);
+    request.open('GET', yql);
     request.onreadystatechange = function () {
 	if (request.readyState != 4) {
             // リクエスト中
@@ -303,11 +313,12 @@ function getSolvedCF(){
 	    var jsonCF = JSON.parse(result);
 	    var problems = {};
 	    solved_codeforces = 0;
-	    for(var i = 0; i < jsonCF.result.length; i++){
-		if(jsonCF.result[i].verdict != "OK" ||
-		   jsonCF.result[i].testset != "TESTS" ) continue;
+	    for(var i = 0; i < jsonCF.query.results.json.result.length; i++){
+		if(jsonCF.query.results.json.result[i].verdict != "OK" ||
+		   jsonCF.query.results.json.result[i].testset != "TESTS" )
+		    continue;
 		
-		var prob = jsonCF.result[i].problem;
+		var prob = jsonCF.query.results.json.result[i].problem;
 		if(problems[prob.contestId] != undefined){
 		    if(problems[prob.contestId][prob.name] == undefined){
 			    problems[prob.contestId][prob.name] = 1;
@@ -356,8 +367,10 @@ function getSolvedAOJ(){
 	return;
     }
     var url = "http://judge.u-aizu.ac.jp/onlinejudge/webservice/user?id=" + handle;
+    var query = "select * from xml where url = '" + url + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=xml&q=" + encodeURIComponent(query);
     var request = new XMLHttpRequest();
-    request.open('GET', url);
+    request.open('GET', yql);
     request.overrideMimeType('text/xml');
     request.onreadystatechange = function () {
 	if (request.readyState != 4) {
