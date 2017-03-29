@@ -349,7 +349,6 @@ function getSolvedAC(){
 	success: function(data) {
 	    var result = data.responseText;
 	    result = result.replace(/.*(\{.*\}).*/,"$1");
-	    tmp=result;
 	    solved_atcoder = JSON.parse(result).ac_num;
 	    drawTable();
 	}, error:function(e) {
