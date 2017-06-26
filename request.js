@@ -458,6 +458,9 @@ function drawTable(){
 	+"</table>";
     var tweet = "";
     var handle = document.getElementById("handle_topcoder").value;
+    if(handle == "") handle = document.getElementById("handle_codeforces").value;
+    if(handle == "") handle = document.getElementById("handle_atcoder").value;
+    if(handle == "") handle = document.getElementById("handle_aoj").value;
     tweet += "The Number of Solved Problems By " + handle + "\n";
     tweet += "TopCoder: " + solved_topcoder + "\n";
     tweet += "CodeForces: " + solved_codeforces + "\n";
