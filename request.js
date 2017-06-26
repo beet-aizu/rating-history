@@ -457,12 +457,13 @@ function drawTable(){
 	+"</tr>"
 	+"</table>";
     var tweet = "";
-    tweet += "The Number of Solved Problems";
-    tweet += "\nTopCoder  : " + solved_topcoder;
-    tweet += "\nCodeForces: " + solved_codeforces;
-    tweet += "\nAtCoder   : " + solved_atcoder;
-    tweet += "\nAOJ       : " + solved_aoj;
-    tweet += "\nSum       : " + solved_sum;
+    var handle = document.getElementById("handle_topcoder").value;
+    tweet += "The Number of Solved Problems By " + handle + "\n";
+    tweet += "TopCoder: " + solved_topcoder + "\n";
+    tweet += "CodeForces: " + solved_codeforces + "\n";
+    tweet += "AtCoder: " + solved_atcoder + "\n";
+    tweet += "AOJ: " + solved_aoj + "\n";
+    tweet += "Sum: " + solved_sum + "\n";
     $.fn.appendTweetButton = function(url,text){
     $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
     }
