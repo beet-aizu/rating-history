@@ -431,8 +431,6 @@ function drawTable(){
     solved_sum += solved_codeforces;
     solved_sum += solved_atcoder;
     solved_sum += solved_aoj;
-
-    
     
     document.getElementById("solved").innerHTML =
 	"Solved: "
@@ -458,6 +456,18 @@ function drawTable(){
 	+"<td align=\"right\">" + solved_sum        + "</td>"
 	+"</tr>"
 	+"</table>";
+    var tweet = "";
+    tweet += "The Number of Solved Problems";
+    tweet += "\nTopCoder  : " + solved_topcoder;
+    tweet += "\nCodeForces: " + solved_codeforces;
+    tweet += "\nAtCoder   : " + solved_atcoder;
+    tweet += "\nAOJ       : " + solved_aoj;
+    tweet += "\nSum       : " + solved_sum;
+    $.fn.appendTweetButton = function(url,text){
+    $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
+    }
+    //Tweetボタンの設置
+    $("body").appendTweetButton($(location).attr('href'), tweet);
 }
 
 $(document).ready(function(){
@@ -480,5 +490,11 @@ $(document).ready(function(){
 	document.wrapper.handle_atcoder.value    = result["handle_atcoder"];
     if(result["handle_aoj"])
 	document.wrapper.handle_aoj.value        = result["handle_aoj"];
+    
+    solved_topcoder   = -1;
+    solved_codeforces = -1;
+    solved_atcoder    = -1;
+    solved_aoj        = -1;
+    
     getData();
 });
