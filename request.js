@@ -97,26 +97,37 @@ function getAtCoder(){
 	drawGraphs();
 	return;
     }
-    $.ajax({
-	type: 'GET',
-	url: "https://atcoder.jp/user/" + handle,
-	dataType: 'html',
-	success: function(data) {
-	    var src = data.responseText;
-	    var jsonStr = getAtcoderJSON(src);
-	    history_atcoder = JSON.parse(jsonStr);
-	    flag_atcoder = true;
-	    drawGraphs();
-	}, error:function(e) {
-	    alert("Failed(AC)");
-	    flag_atcoder = true;
-	    drawGraphs();
-	    console.log(e);
-	}
-    });
+    var call =  function() {
+    var url = "https://atcoder.jp/user/" + handle;
+    var xpath = '//*[@id="main-div"]/div/div/div/script';
+    var query = "select * from htmlstring where url = '" + url + "' and xpath = '" + xpath + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=" + encodeURIComponent(query);
+  $.ajax(
+  {
+    type     : 'GET',
+    url      : yql,
+    dataType : 'json',
+    timeout  : 10000,
+    cache    : false,
+  }).done(function(data){
+      console.log(data);
+      //tmp = data;
+      var jsonStr = getAtcoderJSON(data.query.results.result);
+      history_atcoder = JSON.parse(jsonStr);
+      flag_atcoder = true;
+      drawGraphs();
+  }).fail(function(data){
+      alert("Failed(AC)");
+      flag_atcoder = true;
+      drawGraphs();
+      console.log(data);
+  });
+  }
+  call(); 
 }
 
 function getAtcoderJSON(src) {
+    //alert(src);
     var idxf = src.indexOf('JSON.parse("');
     var idxe = src.indexOf('");]]>', idxf);
     if (idxf != -1 && idxe != -1) {
@@ -342,23 +353,27 @@ function getSolvedAC(){
 	drawTable();
 	return;
     }
-    $.ajax({
-	type: 'GET',
-	url:"http://kenkoooo.com/atcoder-api/user?user=" + handle,
-	dataType: 'html',
-	success: function(data) {
-	    var result = data.responseText;
-	    result = result.replace(/.*(\{.*\}).*/,"$1");
-	    tmp=result;
-	    solved_atcoder = JSON.parse(result).ac_num;
-	    drawTable();
-	}, error:function(e) {
+    var url = "http://kenkoooo.com/atcoder-api/user?user=" + handle;
+    var query = "select * from json where url = '" + url + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
+    var request = new XMLHttpRequest();
+    request.open('GET', yql);
+    request.onreadystatechange = function () {
+	if (request.readyState != 4) {
+            // リクエスト中
+	} else if (request.status != 200) {
 	    alert("Failed(AC)");
 	    solved_atcoder = 0;
 	    drawTable();
-	    console.log(e);
+	} else {
+            // 取得成功
+            var result = request.responseText;
+	    var jsonAC = JSON.parse(result);
+	    solved_atcoder = jsonAC.query.results.json.ac_num;
+	    drawTable();
 	}
-    });
+    };
+    request.send(null);
 }
 function getSolvedAOJ(){
     var handle = document.getElementById("handle_aoj").value;
@@ -405,6 +420,11 @@ function drawTable(){
        solved_atcoder    == null) solved_atcoder = 0;
     if(solved_aoj        == undefined ||
        solved_aoj        == null) solved_aoj = 0;
+    
+    solved_topcoder *= 1.0;
+    solved_codeforces *= 1.0;
+    solved_atcoder *= 1.0;
+    solved_aoj *= 1.0;
     
     solved_sum = 0;
     solved_sum += solved_topcoder;
