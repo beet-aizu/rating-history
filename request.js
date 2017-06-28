@@ -11,6 +11,7 @@ var solved_topcoder;
 var solved_codeforces;
 var solved_atcoder;
 var solved_aoj;
+var solved_yukicoder;
 var solved_sum;
 
 // risky
@@ -255,10 +256,12 @@ function getSolved(){
     solved_codeforces = -1;
     solved_atcoder    = -1;
     solved_aoj        = -1;
+    solved_yukicoder  = -1;
     getSolvedTC();
     getSolvedCF();
     getSolvedAC();
     getSolvedAOJ();
+    getSolvedYC();
     drawTable();
 }
 
@@ -308,7 +311,6 @@ function getSolvedCF(){
     var url = "http://codeforces.com/api/user.status?handle=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
-
     var request = new XMLHttpRequest();
     request.open('GET', yql);
     request.onreadystatechange = function () {
@@ -332,7 +334,7 @@ function getSolvedCF(){
 		var prob = jsonCF.query.results.json.result[i].problem;
 		if(problems[prob.contestId] != undefined){
 		    if(problems[prob.contestId][prob.name] == undefined){
-			    problems[prob.contestId][prob.name] = 1;
+			problems[prob.contestId][prob.name] = 1;
 			solved_codeforces += 1;
 		    }
 		}else{
@@ -406,10 +408,43 @@ function getSolvedAOJ(){
     request.send(null);
 }
 
+function getSolvedYC(){
+    var handle = document.getElementById("handle_yukicoder").value;
+    if(handle == ""){
+	solved_yukicoder = 0;
+	drawTable();
+	return;
+    }
+    var url = "https://yukicoder.me/api/v1/user/name/" + handle;
+    var query = "select * from json where url = '" + url + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
+    var request = new XMLHttpRequest();
+    request.open('GET', yql);
+    request.onreadystatechange = function () {
+	if (request.readyState != 4) {
+            // リクエスト中
+	} else if (request.status != 200) {
+            alert("Failed(YC)");
+	    solved_yukicoder = 0;
+	    drawTable();
+	} else {
+            // 取得成功
+            var result = request.responseText;
+	    var jsonYC = JSON.parse(result);
+	    tmp = jsonYC;
+	    solved_yukicoder = jsonYC.query.results.json.Solved;
+	    drawTable();
+	}
+    };
+    request.send(null);
+}
+
+
 function drawTable(){
     if(solved_topcoder   < 0 ||
        solved_codeforces < 0 ||
        solved_atcoder    < 0 ||
+       solved_yukicoder  < 0 ||
        solved_aoj        < 0 ) return;
 
     if(solved_topcoder   == undefined ||
@@ -420,16 +455,20 @@ function drawTable(){
        solved_atcoder    == null) solved_atcoder = 0;
     if(solved_aoj        == undefined ||
        solved_aoj        == null) solved_aoj = 0;
+    if(solved_yukicoder  == undefined ||
+       solved_yukicoder  == null) solved_yukicoder = 0;
     
     solved_topcoder *= 1.0;
     solved_codeforces *= 1.0;
     solved_atcoder *= 1.0;
     solved_aoj *= 1.0;
+    solved_yukicoder *= 1.0;
     
     solved_sum = 0;
     solved_sum += solved_topcoder;
     solved_sum += solved_codeforces;
     solved_sum += solved_atcoder;
+    solved_sum += solved_yukicoder;
     solved_sum += solved_aoj;
     
     document.getElementById("solved").innerHTML =
@@ -452,6 +491,10 @@ function drawTable(){
 	+"<td align=\"right\">" + solved_aoj        + "</td>"
 	+"</tr>"
 	+"<tr>"
+	+"<td>" + "yukicoder"       + "</td>"
+	+"<td align=\"right\">" + solved_yukicoder  + "</td>"
+	+"</tr>"
+	+"<tr>"
 	+"<td>" + "Sum"             + "</td>"
 	+"<td align=\"right\">" + solved_sum        + "</td>"
 	+"</tr>"
@@ -461,11 +504,13 @@ function drawTable(){
     if(handle == "") handle = document.getElementById("handle_codeforces").value;
     if(handle == "") handle = document.getElementById("handle_atcoder").value;
     if(handle == "") handle = document.getElementById("handle_aoj").value;
+    if(handle == "") handle = document.getElementById("handle_yukicoder").value;
     tweet += "The Number of Solved Problems By " + handle + "\n";
     tweet += "TopCoder: " + solved_topcoder + "\n";
     tweet += "CodeForces: " + solved_codeforces + "\n";
     tweet += "AtCoder: " + solved_atcoder + "\n";
     tweet += "AOJ: " + solved_aoj + "\n";
+    tweet += "yukicoder: " + solved_yukicoder + "\n";
     tweet += "Sum: " + solved_sum + "\n";
     $.fn.appendTweetButton = function(url,text){
     $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
@@ -494,11 +539,14 @@ $(document).ready(function(){
 	document.wrapper.handle_atcoder.value    = result["handle_atcoder"];
     if(result["handle_aoj"])
 	document.wrapper.handle_aoj.value        = result["handle_aoj"];
+    if(result["handle_yukicoder"])
+	document.wrapper.handle_yukicoder.value        = result["handle_yukicoder"];
     
     solved_topcoder   = -1;
     solved_codeforces = -1;
     solved_atcoder    = -1;
     solved_aoj        = -1;
+    solved_yukicoder  = -1;
     
     getData();
 });
