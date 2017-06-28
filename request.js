@@ -505,7 +505,7 @@ function drawTable(){
     if(handle == "") handle = document.getElementById("handle_atcoder").value;
     if(handle == "") handle = document.getElementById("handle_aoj").value;
     if(handle == "") handle = document.getElementById("handle_yukicoder").value;
-    tweet += "The Number of Solved Problems By " + handle + "\n";
+    tweet += "Solved By " + handle + "\n";
     tweet += "TopCoder: " + solved_topcoder + "\n";
     tweet += "CodeForces: " + solved_codeforces + "\n";
     tweet += "AtCoder: " + solved_atcoder + "\n";
