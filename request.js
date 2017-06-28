@@ -415,7 +415,7 @@ function getSolvedYC(){
 	drawTable();
 	return;
     }
-    var url = "https://yukicoder.me/api/v1/user/name/" + handle;
+    var url = "https://yukicoder.me/api/v1/user/name/" + encodeURIComponent(handle);
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     var request = new XMLHttpRequest();
@@ -512,11 +512,11 @@ function drawTable(){
     tweet += "AOJ: " + solved_aoj + "\n";
     tweet += "yukicoder: " + solved_yukicoder + "\n";
     tweet += "Sum: " + solved_sum + "\n";
-    $.fn.appendTweetButton = function(url,text){
+    $.fn.appendTweetButton = function(url, text){
     $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
     }
     //Tweetボタンの設置
-    $("body").appendTweetButton($(location).attr('href'), tweet);
+    $("body").appendTweetButton(encodeURIComponent($(location).attr('href')), tweet);
 }
 
 $(document).ready(function(){
