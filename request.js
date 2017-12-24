@@ -149,20 +149,21 @@ function drawGraphs(){
 	alert(history_codeforces);
 	alert(history_atcoder);
     }
+    var json = history_topcoder.History;
     for(i = 0; history_topcoder != undefined
-	&& i < history_topcoder.History.length; i++){
-	var tmp = history_topcoder.History[i].date.replace(/\./g,"/");
+	&& i < json.length; i++){
+	var tmp = json[i].date.replace(/\./g,"/");
 	list_topcoder.push({
 	    "x": new Date(tmp).getTime() / 1000,
-	    "y": history_topcoder.History[i].rating
+	    "y": json[i].rating
 	});
     }
+    var json = history_codeforces.query.results.json.result;
     for(i = 0; history_codeforces != undefined
-	&& history_codeforces.results != null
-	&& i < history_codeforces.query.results.json.result.length; i++){
+	&& i < json.length; i++){
 	list_codeforces.push({
-	    "x": history_codeforces.query.results.json.result[i].ratingUpdateTimeSeconds,
-	    "y": history_codeforces.query.results.json.result[i].newRating
+	    "x": json[i].ratingUpdateTimeSeconds,
+	    "y": json[i].newRating
 	});
     }
     for(i = 0; history_atcoder != undefined
