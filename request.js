@@ -158,6 +158,7 @@ function drawGraphs(){
 	});
     }
     for(i = 0; history_codeforces != undefined
+	&& history_codeforces.results != null
 	&& i < history_codeforces.query.results.json.result.length; i++){
 	list_codeforces.push({
 	    "x": history_codeforces.query.results.json.result[i].ratingUpdateTimeSeconds,
@@ -324,14 +325,18 @@ function getSolvedCF(){
             // 取得成功
             var result = request.responseText;
 	    var jsonCF = JSON.parse(result);
+	    if(jsonCF.query.results.json==null){
+		solved_codeforces = 0;
+		drawTable();
+	    }
+	    var json = jsonCF.query.results.json.result;
 	    var problems = {};
 	    solved_codeforces = 0;
-	    for(var i = 0; i < jsonCF.query.results.json.result.length; i++){
-		if(jsonCF.query.results.json.result[i].verdict != "OK" ||
-		   jsonCF.query.results.json.result[i].testset != "TESTS" )
-		    continue;
+	    for(var i = 0; i < json.length; i++){
+		if(json[i].verdict != "OK" ||
+		   json[i].testset != "TESTS" )  continue;
 		
-		var prob = jsonCF.query.results.json.result[i].problem;
+		var prob = json[i].problem;
 		if(problems[prob.contestId] != undefined){
 		    if(problems[prob.contestId][prob.name] == undefined){
 			problems[prob.contestId][prob.name] = 1;
@@ -355,7 +360,7 @@ function getSolvedAC(){
 	drawTable();
 	return;
     }
-    var url = "http://kenkoooo.com/atcoder-api/user?user=" + handle;
+    var url = "http://kenkoooo.com/atcoder/atcoder-api/results?user=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     var request = new XMLHttpRequest();
@@ -371,7 +376,22 @@ function getSolvedAC(){
             // 取得成功
             var result = request.responseText;
 	    var jsonAC = JSON.parse(result);
-	    solved_atcoder = jsonAC.query.results.json.ac_num;
+	    if(jsonAC.query.results.json==null){
+		solved_atcoder = 0;
+		drawTable();
+	    }
+	    var json = jsonAC.query.results.json.json;
+	    var problems = {};
+	    solved_atcoder = 0;
+	    for(var i = 0; i < json.length; i++){
+		if(json[i].result != "AC" )
+		    continue;
+		var prob = json[i].problem_id;
+		if(problems[prob] == undefined){
+		    problems[prob] = 1;
+		    solved_atcoder += 1;
+		}
+	    }
 	    drawTable();
 	}
     };
