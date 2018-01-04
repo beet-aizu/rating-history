@@ -149,7 +149,9 @@ function drawGraphs(){
 	alert(history_codeforces);
 	alert(history_atcoder);
     }
-    var json = history_topcoder.History;
+    var json;
+    if(history_topcoder != undefined)
+	json = history_topcoder.History;
     for(i = 0; history_topcoder != undefined
 	&& i < json.length; i++){
 	var tmp = json[i].date.replace(/\./g,"/");
@@ -158,7 +160,8 @@ function drawGraphs(){
 	    "y": json[i].rating
 	});
     }
-    var json = history_codeforces.query.results.json.result;
+    if(history_codeforces != undefined)
+	json = history_codeforces.query.results.json.result;
     for(i = 0; history_codeforces != undefined
 	&& i < json.length; i++){
 	list_codeforces.push({
@@ -405,12 +408,11 @@ function getSolvedAOJ(){
 	drawTable();
 	return;
     }
-    var url = "http://judge.u-aizu.ac.jp/onlinejudge/webservice/user?id=" + handle;
-    var query = "select * from xml where url = '" + url + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=xml&q=" + encodeURIComponent(query);
+    var url = "https://judgeapi.u-aizu.ac.jp/users/" + handle;
+    var query = "select * from json where url = '" + url + "'";
+    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     var request = new XMLHttpRequest();
     request.open('GET', yql);
-    request.overrideMimeType('text/xml');
     request.onreadystatechange = function () {
 	if (request.readyState != 4) {
             // リクエスト中
@@ -420,9 +422,10 @@ function getSolvedAOJ(){
 	    drawTable();
 	} else {
             // 取得成功
-            var result = request.responseXML;
-	    var node   = result.documentElement;
-	    solved_aoj = Number(node.getElementsByTagName("solved")[0].innerHTML);
+            var result = request.responseText;
+	    var jsonAOJ = JSON.parse(result);
+	    tmp = jsonAOJ;
+	    solved_aoj = jsonAOJ.query.results.json.status.solved;
 	    drawTable();
 	}
     };
