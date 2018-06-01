@@ -67,7 +67,7 @@ function getCodeForces(){
 	drawGraphs();
 	return;
     }
-    var url = "http://codeforces.com/api/user.rating?handle=" + handle;
+    var url = "https://codeforces.com/api/user.rating?handle=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
 
@@ -99,44 +99,30 @@ function getAtCoder(){
 	return;
     }
     var call =  function() {
-    var url = "https://atcoder.jp/user/" + handle;
-    var xpath = '//*[@id="main-div"]/div/div/div/script';
-    var query = "select * from htmlstring where url = '" + url + "' and xpath = '" + xpath + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=" + encodeURIComponent(query);
-  $.ajax(
-  {
-    type     : 'GET',
-    url      : yql,
-    dataType : 'json',
-    timeout  : 10000,
-    cache    : false,
-  }).done(function(data){
-      console.log(data);
-      //tmp = data;
-      var jsonStr = getAtcoderJSON(data.query.results.result);
-      history_atcoder = JSON.parse(jsonStr);
-      flag_atcoder = true;
-      drawGraphs();
-  }).fail(function(data){
-      alert("Failed(AC)");
-      flag_atcoder = true;
-      drawGraphs();
-      console.log(data);
-  });
-  }
-  call(); 
-}
-
-function getAtcoderJSON(src) {
-    //alert(src);
-    var idxf = src.indexOf('JSON.parse("');
-    var idxe = src.indexOf('");]]>', idxf);
-    if (idxf != -1 && idxe != -1) {
-	return src.slice(idxf + 12, idxe).replace(/\\/g, "");
+	var url = "https://beta.atcoder.jp/users/" + handle +"/history/json";
+	var query = "select * from json where url = '" + url + "'";
+	var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=" + encodeURIComponent(query);
+	$.ajax(
+	    {
+		type     : 'GET',
+		url      : yql,
+		dataType : 'json',
+		timeout  : 10000,
+		cache    : false,
+	    }).done(function(data){
+		console.log(data);
+		history_atcoder = data;
+		flag_atcoder = true;
+		drawGraphs();
+	    }).fail(function(data){
+		alert("Failed(AC)");
+		flag_atcoder = true;
+		drawGraphs();
+		console.log(data);
+	    });
     }
-    return null;
+    call(); 
 }
-
     
 var w = 400;
 var h = 300;
@@ -152,8 +138,8 @@ function drawGraphs(){
     var json;
     if(history_topcoder != undefined)
 	json = history_topcoder.History;
-    for(i = 0; history_topcoder != undefined
-	&& i < json.length; i++){
+    else json = undefined;
+    for(i = 0; json != undefined && i < json.length; i++){
 	var tmp = json[i].date.replace(/\./g,"/");
 	list_topcoder.push({
 	    "x": new Date(tmp).getTime() / 1000,
@@ -162,18 +148,23 @@ function drawGraphs(){
     }
     if(history_codeforces != undefined)
 	json = history_codeforces.query.results.json.result;
-    for(i = 0; history_codeforces != undefined
-	&& i < json.length; i++){
+    else json = undefined;
+    for(i = 0; json != undefined && i < json.length; i++){
 	list_codeforces.push({
 	    "x": json[i].ratingUpdateTimeSeconds,
 	    "y": json[i].newRating
 	});
     }
-    for(i = 0; history_atcoder != undefined
-	&& i < history_atcoder.length; i++){
+    
+    if(history_atcoder != undefined)
+	json = history_atcoder.query.results.json.json;
+    else json = undefined;
+    for(i = 0; json != undefined && i < json.length; i++){
+	if(json[i]['IsRated'] != "true") continue;
+	var tmp = json[i]['EndTime'].replace(/\./g,"/");
 	list_atcoder.push({
-	    "x": history_atcoder[i][0],
-	    "y": history_atcoder[i][1]
+	    "x": new Date(tmp).getTime() / 1000,
+	    "y": json[i]['NewRating'] / 1.0
 	});
     }
     
@@ -313,7 +304,7 @@ function getSolvedCF(){
 	drawTable();
 	return;
     }
-    var url = "http://codeforces.com/api/user.status?handle=" + handle;
+    var url = "https://codeforces.com/api/user.status?handle=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     var request = new XMLHttpRequest();
@@ -364,7 +355,7 @@ function getSolvedAC(){
 	drawTable();
 	return;
     }
-    var url = "http://kenkoooo.com/atcoder/atcoder-api/results?user=" + handle;
+    var url = "https://kenkoooo.com/atcoder/atcoder-api/results?user=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     var request = new XMLHttpRequest();
