@@ -36,94 +36,90 @@ function getData(){
 function getTopCoder(){
     var handle = document.getElementById("handle_topcoder").value;
     if(handle == ""){
-	flag_topcoder = true;
-	drawGraphs();
-	return;
+	      flag_topcoder = true;
+	      drawGraphs();
+	      return;
     }
     var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
     var request = new XMLHttpRequest();
     request.open('GET', url);
     request.onreadystatechange = function () {
-	if (request.readyState != 4) {
+	      if (request.readyState != 4) {
             // リクエスト中
-	} else if (request.status != 200) {
+	      } else if (request.status != 200) {
             alert("Failed(TC)");
-	    flag_topcoder = true;
-	    drawGraphs();
-	} else {
+	          flag_topcoder = true;
+	          drawGraphs();
+	      } else {
             // 取得成功
             var result = request.responseText;
-	    history_topcoder = JSON.parse(result);
-	    flag_topcoder = true;
-	    drawGraphs();
-	}
+	          history_topcoder = JSON.parse(result);
+	          flag_topcoder = true;
+	          drawGraphs();
+	      }
     };
     request.send(null);
 }
 function getCodeForces(){
     var handle = document.getElementById("handle_codeforces").value;
     if(handle == ""){
-	flag_codeforces = true;
-	drawGraphs();
-	return;
+	      flag_codeforces = true;
+	      drawGraphs();
+	      return;
     }
     var url = "https://codeforces.com/api/user.rating?handle=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
-
-    var request = new XMLHttpRequest();
-    request.open('GET', yql);
-    request.onreadystatechange = function () {
-	if (request.readyState != 4) {
-            // リクエスト中
-	} else if (request.status != 200) {
-	    alert("Failed(CF)");
-	    flag_codeforces = true;
-	    drawGraphs();
-	} else {
-            // 取得成功
-            var result = request.responseText;
-	    history_codeforces = JSON.parse(result);
-	    flag_codeforces = true;
-	    drawGraphs();
-	}
-    };
-    request.send(null);
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : yql,
+		        dataType : 'json',
+		        timeout  : 10000,
+		        cache    : false,
+	      }).done(function(data){
+            history_codeforces = data;
+	          flag_codeforces = true;
+	          drawGraphs();
+		        console.log(data);
+	      }).fail(function(data){
+	          alert("Failed(CF)");
+	          flag_codeforces = true;
+	          drawGraphs();
+		        console.log(data);
+	      });
 }
 
 function getAtCoder(){
     var handle = document.getElementById("handle_atcoder").value;
     if(handle == ""){
-	flag_atcoder = true;
-	drawGraphs();
-	return;
+	      flag_atcoder = true;
+	      drawGraphs();
+	      return;
     }
-    var call =  function() {
-	var url = "https://beta.atcoder.jp/users/" + handle +"/history/json";
-	var query = "select * from json where url = '" + url + "'";
-	var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=" + encodeURIComponent(query);
-	$.ajax(
-	    {
-		type     : 'GET',
-		url      : yql,
-		dataType : 'json',
-		timeout  : 10000,
-		cache    : false,
-	    }).done(function(data){
-		console.log(data);
-		history_atcoder = data;
-		flag_atcoder = true;
-		drawGraphs();
-	    }).fail(function(data){
-		alert("Failed(AC)");
-		flag_atcoder = true;
-		drawGraphs();
-		console.log(data);
-	    });
-    }
-    call(); 
+	  var url = "https://beta.atcoder.jp/users/" + handle +"/history/json";
+	  var query = "select * from json where url = '" + url + "'";
+	  var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=" + encodeURIComponent(query);
+	  $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : yql,
+		        dataType : 'json',
+		        timeout  : 10000,
+		        cache    : false,
+	      }).done(function(data){
+		        console.log(data);
+		        history_atcoder = data;
+		        flag_atcoder = true;
+		        drawGraphs();
+	      }).fail(function(data){
+		        alert("Failed(AC)");
+		        flag_atcoder = true;
+		        drawGraphs();
+		        console.log(data);
+	      });
 }
-    
+
 var w = 400;
 var h = 300;
 var minx,maxx,miny,maxy;
@@ -131,60 +127,60 @@ var minx,maxx,miny,maxy;
 function drawGraphs(){
     if(!flag_topcoder || !flag_codeforces || !flag_atcoder) return;
     if(!true){
-	alert(history_topcoder);
-	alert(history_codeforces);
-	alert(history_atcoder);
+	      alert(history_topcoder);
+	      alert(history_codeforces);
+	      alert(history_atcoder);
     }
     var json;
     if(history_topcoder != undefined)
-	json = history_topcoder.History;
+	      json = history_topcoder.History;
     else json = undefined;
     for(i = 0; json != undefined && i < json.length; i++){
-	var tmp = json[i].date.replace(/\./g,"/");
-	list_topcoder.push({
-	    "x": new Date(tmp).getTime() / 1000,
-	    "y": json[i].rating
-	});
+	      var tmp = json[i].date.replace(/\./g,"/");
+	      list_topcoder.push({
+	          "x": new Date(tmp).getTime() / 1000,
+	          "y": json[i].rating
+	      });
     }
     if(history_codeforces != undefined)
-	json = history_codeforces.query.results.json.result;
+	      json = history_codeforces.query.results.json.result;
     else json = undefined;
     for(i = 0; json != undefined && i < json.length; i++){
-	list_codeforces.push({
-	    "x": json[i].ratingUpdateTimeSeconds,
-	    "y": json[i].newRating
-	});
+	      list_codeforces.push({
+	          "x": json[i].ratingUpdateTimeSeconds,
+	          "y": json[i].newRating
+	      });
     }
     
     if(history_atcoder != undefined)
-	json = history_atcoder.query.results.json.json;
+	      json = history_atcoder.query.results.json.json;
     else json = undefined;
     for(i = 0; json != undefined && i < json.length; i++){
-	if(json[i]['IsRated'] != "true") continue;
-	var tmp = json[i]['EndTime'].replace(/\./g,"/");
-	list_atcoder.push({
-	    "x": new Date(tmp).getTime() / 1000,
-	    "y": json[i]['NewRating'] / 1.0
-	});
+	      if(json[i]['IsRated'] != "true") continue;
+	      var tmp = json[i]['EndTime'].replace(/\./g,"/");
+	      list_atcoder.push({
+	          "x": new Date(tmp).getTime() / 1000,
+	          "y": json[i]['NewRating'] / 1.0
+	      });
     }
     
     if(!true){
-	document.getElementById("rating_topcoder"  ).innerHTML = list_topcoder;
-	document.getElementById("rating_codeforces").innerHTML = list_codeforces;
-	document.getElementById("rating_atcoder"   ).innerHTML = list_atcoder;
+	      document.getElementById("rating_topcoder"  ).innerHTML = list_topcoder;
+	      document.getElementById("rating_codeforces").innerHTML = list_codeforces;
+	      document.getElementById("rating_atcoder"   ).innerHTML = list_atcoder;
     }    
     
     if(list_topcoder.length != 0){
-	minx = list_topcoder[0].x;
-	maxx = list_topcoder[0].x;
+	      minx = list_topcoder[0].x;
+	      maxx = list_topcoder[0].x;
     }else if(list_codeforces.length != 0){
-	minx = list_codeforces[0].x;
-	maxx = list_codeforces[0].x;
+	      minx = list_codeforces[0].x;
+	      maxx = list_codeforces[0].x;
     }else if(list_atcoder.length != 0){
-	minx = list_atcoder[0].x;
-	maxx = list_atcoder[0].x;
+	      minx = list_atcoder[0].x;
+	      maxx = list_atcoder[0].x;
     }else{
-	return;
+	      return;
     }
 
     getRange(list_topcoder);
@@ -192,16 +188,16 @@ function drawGraphs(){
     getRange(list_atcoder);
 
     if(!true){
-	alert(minx);
-	alert(maxx);
-	alert(miny);
-	alert(maxy);
+	      alert(minx);
+	      alert(maxx);
+	      alert(miny);
+	      alert(maxy);
     }
     
     var svg = d3.select("#graphs")
-	.append("svg")
-	.attr("width", w)
-	.attr("height", h);
+	      .append("svg")
+	      .attr("width", w)
+	      .attr("height", h);
     
     drawGraph(list_topcoder  , svg, "red");
     drawGraph(list_codeforces, svg, "blue");
@@ -215,11 +211,11 @@ function drawGraphs(){
 
 function getRange(list){
     list.sort(function(a,b){
-	return a.x-b.x;
+	      return a.x-b.x;
     });
     for(i = 0; i < list.length; i++){
-	if(minx > list[i].x) minx = list[i].x;
-	if(maxx < list[i].x) maxx = list[i].x;
+	      if(minx > list[i].x) minx = list[i].x;
+	      if(maxx < list[i].x) maxx = list[i].x;
     }
 }
 
@@ -231,19 +227,19 @@ function drawGraph(list, svg, color){
     maxy = list[0].y;
     
     for(i = 0; i < list.length; i++){
-	if(miny > list[i].y) miny = list[i].y;
-	if(maxy < list[i].y) maxy = list[i].y;
+	      if(miny > list[i].y) miny = list[i].y;
+	      if(maxy < list[i].y) maxy = list[i].y;
     }
     
     var line = d3.svg.line()
-	.x(function(d){return w * (d.x - minx) / (maxx - minx);})
-	.y(function(d){return h * (1.0 - (d.y - miny) / (maxy - miny));});
+	      .x(function(d){return w * (d.x - minx) / (maxx - minx);})
+	      .y(function(d){return h * (1.0 - (d.y - miny) / (maxy - miny));});
 
     svg.append("path")
-	.attr("d",line(list))
-	.attr("stroke",color)
-	.attr("stroke-width",1)
-	.attr("fill","none");
+	      .attr("d",line(list))
+	      .attr("stroke",color)
+	      .attr("stroke-width",1)
+	      .attr("fill","none");
 
 }
 
@@ -264,35 +260,35 @@ function getSolved(){
 function getSolvedTC(){
     var handle = document.getElementById("handle_topcoder").value;
     if(handle == ""){
-	solved_topcoder = 0;
-	drawTable();
-	return;
+	      solved_topcoder = 0;
+	      drawTable();
+	      return;
     }
     var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
     var request = new XMLHttpRequest();
     request.open('GET', url);
     request.onreadystatechange = function () {
-	if (request.readyState != 4) {
+	      if (request.readyState != 4) {
             // リクエスト中
-	} else if (request.status != 200) {
+	      } else if (request.status != 200) {
             alert("Failed(TC)");
-	    solved_topcoder = 0;
-	    drawTable();
-	} else {
+	          solved_topcoder = 0;
+	          drawTable();
+	      } else {
             // 取得成功
             var result = request.responseText;
-	    var jsonTC = JSON.parse(result);
-	    solved_topcoder = 0;
-	    var div1 = jsonTC["Divisions"]["Division I" ]["Level Total"];
-	    var div2 = jsonTC["Divisions"]["Division II"]["Level Total"];
-	    solved_topcoder += div1["submitted"];
-	    solved_topcoder -= div1["failedChallenge"];
-	    solved_topcoder -= div1["failedSys.Test"];
-	    solved_topcoder += div2["submitted"];
-	    solved_topcoder -= div2["failedChallenge"];
-	    solved_topcoder -= div2["failedSys.Test"];
-	    drawTable();
-	}
+	          var jsonTC = JSON.parse(result);
+	          solved_topcoder = 0;
+	          var div1 = jsonTC["Divisions"]["Division I" ]["Level Total"];
+	          var div2 = jsonTC["Divisions"]["Division II"]["Level Total"];
+	          solved_topcoder += div1["submitted"];
+	          solved_topcoder -= div1["failedChallenge"];
+	          solved_topcoder -= div1["failedSys.Test"];
+	          solved_topcoder += div2["submitted"];
+	          solved_topcoder -= div2["failedChallenge"];
+	          solved_topcoder -= div2["failedSys.Test"];
+	          drawTable();
+	      }
     };
     request.send(null);
 }
@@ -300,158 +296,153 @@ function getSolvedTC(){
 function getSolvedCF(){
     var handle = document.getElementById("handle_codeforces").value;
     if(handle == ""){
-	solved_codeforces = 0;
-	drawTable();
-	return;
+	      solved_codeforces = 0;
+	      drawTable();
+	      return;
     }
     var url = "https://codeforces.com/api/user.status?handle=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
-    var request = new XMLHttpRequest();
-    request.open('GET', yql);
-    request.onreadystatechange = function () {
-	if (request.readyState != 4) {
-            // リクエスト中
-	} else if (request.status != 200) {
-	    alert("Failed(CF)");
-	    solved_codeforces = 0;
-	    drawTable();
-	} else {
-            // 取得成功
-            var result = request.responseText;
-	    var jsonCF = JSON.parse(result);
-	    if(jsonCF.query.results.json==null){
-		solved_codeforces = 0;
-		drawTable();
-	    }
-	    var json = jsonCF.query.results.json.result;
-	    var problems = {};
-	    solved_codeforces = 0;
-	    for(var i = 0; i < json.length; i++){
-		if(json[i].verdict != "OK" ||
-		   json[i].testset != "TESTS" )  continue;
-		
-		var prob = json[i].problem;
-		if(problems[prob.contestId] != undefined){
-		    if(problems[prob.contestId][prob.name] == undefined){
-			problems[prob.contestId][prob.name] = 1;
-			solved_codeforces += 1;
-		    }
-		}else{
-		    problems[prob.contestId] = {};
-		    problems[prob.contestId][prob.name] = 1;
-		    solved_codeforces += 1;
-		}
-	    }
-	    drawTable();
-	}
-    };
-    request.send(null);
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : yql,
+		        dataType : 'json',
+		        timeout  : 20000,
+		        cache    : false,
+	      }).done(function(data){
+            var jsonCF = data;
+	          if(jsonCF.query.results.json==null){
+		            solved_codeforces = 0;
+		            drawTable();
+	          }
+	          var json = jsonCF.query.results.json.result;
+	          var problems = {};
+	          solved_codeforces = 0;
+	          for(var i = 0; i < json.length; i++){
+		            if(json[i].verdict != "OK" ||
+		               json[i].testset != "TESTS" )  continue;
+		            
+		            var prob = json[i].problem;
+		            if(problems[prob.contestId] != undefined){
+		                if(problems[prob.contestId][prob.name] == undefined){
+			                  problems[prob.contestId][prob.name] = 1;
+			                  solved_codeforces += 1;
+		                }
+		            }else{
+		                problems[prob.contestId] = {};
+		                problems[prob.contestId][prob.name] = 1;
+		                solved_codeforces += 1;
+		            }
+	          }
+	          drawTable();
+	      }).fail(function(data){
+            alert("Failed(CF)");
+	          solved_codeforces = 0;
+	          drawTable();
+		        console.log(data);
+	      });
 }
 function getSolvedAC(){
     var handle = document.getElementById("handle_atcoder").value;
     if(handle == ""){
-	solved_atcoder = 0;
-	drawTable();
-	return;
+	      solved_atcoder = 0;
+	      drawTable();
+	      return;
     }
     var url = "https://kenkoooo.com/atcoder/atcoder-api/results?user=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
-    var request = new XMLHttpRequest();
-    request.open('GET', yql);
-    request.onreadystatechange = function () {
-	if (request.readyState != 4) {
-            // リクエスト中
-	} else if (request.status != 200) {
-	    alert("Failed(AC)");
-	    solved_atcoder = 0;
-	    drawTable();
-	} else {
-            // 取得成功
-            var result = request.responseText;
-	    var jsonAC = JSON.parse(result);
-	    if(jsonAC.query.results.json==null){
-		solved_atcoder = 0;
-		drawTable();
-	    }
-	    var json = jsonAC.query.results.json.json;
-	    var problems = {};
-	    solved_atcoder = 0;
-	    for(var i = 0; i < json.length; i++){
-		if(json[i].result != "AC" )
-		    continue;
-		var prob = json[i].problem_id;
-		if(problems[prob] == undefined){
-		    problems[prob] = 1;
-		    solved_atcoder += 1;
-		}
-	    }
-	    drawTable();
-	}
-    };
-    request.send(null);
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : yql,
+		        dataType : 'json',
+		        timeout  : 20000,
+		        cache    : false,
+	      }).done(function(data){
+	          var jsonAC = data;
+            tmp = jsonAC;
+	          if(jsonAC.query.results.json==null){
+		            solved_atcoder = 0;
+		            drawTable();
+	          }
+	          var json = jsonAC.query.results.json.json;
+	          var problems = {};
+	          solved_atcoder = 0;
+	          for(var i = 0; i < json.length; i++){
+		            if(json[i].result != "AC" )
+		                continue;
+		            var prob = json[i].problem_id;
+		            if(problems[prob] == undefined){
+		                problems[prob] = 1;
+		                solved_atcoder += 1;
+		            }
+	          }
+	          drawTable();
+	      }).fail(function(data){
+		        alert("Failed(AC)");
+	          solved_atcoder = 0;
+	          drawTable();
+		        console.log(data);
+	      });
 }
 function getSolvedAOJ(){
     var handle = document.getElementById("handle_aoj").value;
     if(handle == ""){
-	solved_aoj = 0;
-	drawTable();
-	return;
+	      solved_aoj = 0;
+	      drawTable();
+	      return;
     }
     var url = "https://judgeapi.u-aizu.ac.jp/users/" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
-    var request = new XMLHttpRequest();
-    request.open('GET', yql);
-    request.onreadystatechange = function () {
-	if (request.readyState != 4) {
-            // リクエスト中
-	} else if (request.status != 200) {
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : yql,
+		        dataType : 'json',
+		        timeout  : 20000,
+		        cache    : false,
+	      }).done(function(data){
+	          var jsonAOJ = data;
+	          solved_aoj = jsonAOJ.query.results.json.status.solved;
+	          drawTable();
+	      }).fail(function(data){
             alert("Failed(AOJ)");
-	    solved_aoj = 0;
-	    drawTable();
-	} else {
-            // 取得成功
-            var result = request.responseText;
-	    var jsonAOJ = JSON.parse(result);
-	    tmp = jsonAOJ;
-	    solved_aoj = jsonAOJ.query.results.json.status.solved;
-	    drawTable();
-	}
-    };
-    request.send(null);
+	          solved_aoj = 0;
+	          drawTable();
+		        console.log(data);
+	      });
 }
 
 function getSolvedYC(){
     var handle = document.getElementById("handle_yukicoder").value;
     if(handle == ""){
-	solved_yukicoder = 0;
-	drawTable();
-	return;
+	      solved_yukicoder = 0;
+	      drawTable();
+	      return;
     }
     var url = "https://yukicoder.me/api/v1/user/name/" + encodeURIComponent(handle);
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
-    var request = new XMLHttpRequest();
-    request.open('GET', yql);
-    request.onreadystatechange = function () {
-	if (request.readyState != 4) {
-            // リクエスト中
-	} else if (request.status != 200) {
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : yql,
+		        dataType : 'json',
+		        timeout  : 20000,
+		        cache    : false,
+	      }).done(function(data){	          
+	          var jsonYC = data;
+	          solved_yukicoder = jsonYC.query.results.json.Solved;
+	          drawTable();
+	      }).fail(function(data){
             alert("Failed(YC)");
-	    solved_yukicoder = 0;
-	    drawTable();
-	} else {
-            // 取得成功
-            var result = request.responseText;
-	    var jsonYC = JSON.parse(result);
-	    tmp = jsonYC;
-	    solved_yukicoder = jsonYC.query.results.json.Solved;
-	    drawTable();
-	}
-    };
-    request.send(null);
+	          solved_yukicoder = 0;
+	          drawTable();
+		        console.log(data);
+	      });
 }
 
 
@@ -487,33 +478,33 @@ function drawTable(){
     solved_sum += solved_aoj;
     
     document.getElementById("solved").innerHTML =
-	"Solved: "
-	+"<table border=\"1px\">"
-	+"<tr>"
-	+"<td>" + "TopCoder"        + "</td>"
-	+"<td align=\"right\">" + solved_topcoder   + "</td>"
-	+"</tr>"
-	+"<tr>"
-	+"<td>" + "CodeForces"      + "</td>"
-	+"<td align=\"right\">" + solved_codeforces + "</td>"
-	+"</tr>"
-	+"<tr>"
-	+"<td>" + "AtCoder"         + "</td>"
-	+"<td align=\"right\">" + solved_atcoder    + "</td>"
-	+"</tr>"
-	+"<tr>"
-	+"<td>" + "AOJ"             + "</td>"
-	+"<td align=\"right\">" + solved_aoj        + "</td>"
-	+"</tr>"
-	+"<tr>"
-	+"<td>" + "yukicoder"       + "</td>"
-	+"<td align=\"right\">" + solved_yukicoder  + "</td>"
-	+"</tr>"
-	+"<tr>"
-	+"<td>" + "Sum"             + "</td>"
-	+"<td align=\"right\">" + solved_sum        + "</td>"
-	+"</tr>"
-	+"</table>";
+	      "Solved: "
+	      +"<table border=\"1px\">"
+	      +"<tr>"
+	      +"<td>" + "TopCoder"        + "</td>"
+	      +"<td align=\"right\">" + solved_topcoder   + "</td>"
+	      +"</tr>"
+	      +"<tr>"
+	      +"<td>" + "CodeForces"      + "</td>"
+	      +"<td align=\"right\">" + solved_codeforces + "</td>"
+	      +"</tr>"
+	      +"<tr>"
+	      +"<td>" + "AtCoder"         + "</td>"
+	      +"<td align=\"right\">" + solved_atcoder    + "</td>"
+	      +"</tr>"
+	      +"<tr>"
+	      +"<td>" + "AOJ"             + "</td>"
+	      +"<td align=\"right\">" + solved_aoj        + "</td>"
+	      +"</tr>"
+	      +"<tr>"
+	      +"<td>" + "yukicoder"       + "</td>"
+	      +"<td align=\"right\">" + solved_yukicoder  + "</td>"
+	      +"</tr>"
+	      +"<tr>"
+	      +"<td>" + "Sum"             + "</td>"
+	      +"<td align=\"right\">" + solved_sum        + "</td>"
+	      +"</tr>"
+	      +"</table>";
     var tweet = "";
     var handle = document.getElementById("handle_topcoder").value;
     if(handle == "") handle = document.getElementById("handle_codeforces").value;
@@ -528,7 +519,7 @@ function drawTable(){
     tweet += "yukicoder: " + solved_yukicoder + "\n";
     tweet += "Sum: " + solved_sum + "\n";
     $.fn.appendTweetButton = function(url, text){
-    $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
+        $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
     }
     //Tweetボタンの設置
     $("body").appendTweetButton($(location).attr('href'), tweet);
@@ -547,15 +538,15 @@ $(document).ready(function(){
         }
     }
     if(result["handle_topcoder"])
-	document.wrapper.handle_topcoder.value   = result["handle_topcoder"];
+	      document.wrapper.handle_topcoder.value   = result["handle_topcoder"];
     if(result["handle_codeforces"])
-	document.wrapper.handle_codeforces.value = result["handle_codeforces"];
+	      document.wrapper.handle_codeforces.value = result["handle_codeforces"];
     if(result["handle_atcoder"])
-	document.wrapper.handle_atcoder.value    = result["handle_atcoder"];
+	      document.wrapper.handle_atcoder.value    = result["handle_atcoder"];
     if(result["handle_aoj"])
-	document.wrapper.handle_aoj.value        = result["handle_aoj"];
+	      document.wrapper.handle_aoj.value        = result["handle_aoj"];
     if(result["handle_yukicoder"])
-	document.wrapper.handle_yukicoder.value        = result["handle_yukicoder"];
+	      document.wrapper.handle_yukicoder.value        = result["handle_yukicoder"];
     
     solved_topcoder   = -1;
     solved_codeforces = -1;
