@@ -350,7 +350,7 @@ function getSolvedAC(){
 	      drawTable();
 	      return;
     }
-    var url = "https://kenkoooo.com/atcoder/atcoder-api/results?user=" + handle;
+    var url = "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user=" + handle;
     var query = "select * from json where url = '" + url + "'";
     var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     $.ajax(
@@ -362,23 +362,8 @@ function getSolvedAC(){
 		        cache    : false,
 	      }).done(function(data){
 	          var jsonAC = data;
-            tmp = jsonAC;
-	          if(jsonAC.query.results.json==null){
-		            solved_atcoder = 0;
-		            drawTable();
-	          }
-	          var json = jsonAC.query.results.json.json;
-	          var problems = {};
-	          solved_atcoder = 0;
-	          for(var i = 0; i < json.length; i++){
-		            if(json[i].result != "AC" )
-		                continue;
-		            var prob = json[i].problem_id;
-		            if(problems[prob] == undefined){
-		                problems[prob] = 1;
-		                solved_atcoder += 1;
-		            }
-	          }
+            solved_atcoder = jsonAC.query.results.json.accepted_count;
+	          if(solved_atcoder == null) solved_atcoder = 0;
 	          drawTable();
 	      }).fail(function(data){
 		        alert("Failed(AC)");
