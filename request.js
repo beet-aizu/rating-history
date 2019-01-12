@@ -60,6 +60,7 @@ function getTopCoder(){
     };
     request.send(null);
 }
+
 function getCodeForces(){
     var handle = document.getElementById("handle_codeforces").value;
     if(handle == ""){
@@ -67,13 +68,11 @@ function getCodeForces(){
 	      drawGraphs();
 	      return;
     }
-    var url = "https://codeforces.com/api/user.rating?handle=" + handle;
-    var query = "select * from json where url = '" + url + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
+    var url = "https://codeforces.com/api/user.rating?handle=" + handle;    
     $.ajax(
 	      {
 		        type     : 'GET',
-		        url      : yql,
+		        url      : url,
 		        dataType : 'json',
 		        timeout  : 10000,
 		        cache    : false,
@@ -97,13 +96,11 @@ function getAtCoder(){
 	      drawGraphs();
 	      return;
     }
-	  var url = "https://beta.atcoder.jp/users/" + handle +"/history/json";
-	  var query = "select * from json where url = '" + url + "'";
-	  var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=" + encodeURIComponent(query);
+	  var url = "https://atcoder.jp/users/" + handle +"/history/json";
 	  $.ajax(
 	      {
 		        type     : 'GET',
-		        url      : yql,
+		        url      : url,
 		        dataType : 'json',
 		        timeout  : 10000,
 		        cache    : false,
@@ -143,7 +140,7 @@ function drawGraphs(){
 	      });
     }
     if(history_codeforces != undefined)
-	      json = history_codeforces.query.results.json.result;
+	      json = history_codeforces.result;
     else json = undefined;
     for(i = 0; json != undefined && i < json.length; i++){
 	      list_codeforces.push({
@@ -300,23 +297,22 @@ function getSolvedCF(){
 	      drawTable();
 	      return;
     }
-    var url = "https://codeforces.com/api/user.status?handle=" + handle;
-    var query = "select * from json where url = '" + url + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
+    var url = "https://codeforces.com/api/user.status?handle=" + handle;    
     $.ajax(
 	      {
 		        type     : 'GET',
-		        url      : yql,
+		        url      : url,
 		        dataType : 'json',
 		        timeout  : 20000,
 		        cache    : false,
 	      }).done(function(data){
             var jsonCF = data;
-	          if(jsonCF.query.results.json==null){
+            console.log(jsonCF)
+	          if(jsonCF.result==null){
 		            solved_codeforces = 0;
 		            drawTable();
 	          }
-	          var json = jsonCF.query.results.json.result;
+	          var json = jsonCF.result;
 	          var problems = {};
 	          solved_codeforces = 0;
 	          for(var i = 0; i < json.length; i++){
@@ -351,18 +347,17 @@ function getSolvedAC(){
 	      return;
     }
     var url = "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user=" + handle;
-    var query = "select * from json where url = '" + url + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     $.ajax(
 	      {
 		        type     : 'GET',
-		        url      : yql,
+		        url      : url,
 		        dataType : 'json',
 		        timeout  : 20000,
 		        cache    : false,
 	      }).done(function(data){
 	          var jsonAC = data;
-            solved_atcoder = jsonAC.query.results.json.accepted_count;
+            console.log(jsonAC)
+            solved_atcoder = jsonAC.accepted_count;
 	          if(solved_atcoder == null) solved_atcoder = 0;
 	          drawTable();
 	      }).fail(function(data){
@@ -380,18 +375,16 @@ function getSolvedAOJ(){
 	      return;
     }
     var url = "https://judgeapi.u-aizu.ac.jp/users/" + handle;
-    var query = "select * from json where url = '" + url + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     $.ajax(
 	      {
 		        type     : 'GET',
-		        url      : yql,
+		        url      : url,
 		        dataType : 'json',
 		        timeout  : 20000,
 		        cache    : false,
 	      }).done(function(data){
 	          var jsonAOJ = data;
-	          solved_aoj = jsonAOJ.query.results.json.status.solved;
+	          solved_aoj = jsonAOJ.status.solved;
 	          drawTable();
 	      }).fail(function(data){
             alert("Failed(AOJ)");
@@ -409,18 +402,16 @@ function getSolvedYC(){
 	      return;
     }
     var url = "https://yukicoder.me/api/v1/user/name/" + encodeURIComponent(handle);
-    var query = "select * from json where url = '" + url + "'";
-    var yql   = "https://query.yahooapis.com/v1/public/yql?format=json&q=" + encodeURIComponent(query);
     $.ajax(
 	      {
 		        type     : 'GET',
-		        url      : yql,
+		        url      : url,
 		        dataType : 'json',
 		        timeout  : 20000,
 		        cache    : false,
 	      }).done(function(data){	          
 	          var jsonYC = data;
-	          solved_yukicoder = jsonYC.query.results.json.Solved;
+	          solved_yukicoder = jsonYC.Solved;
 	          drawTable();
 	      }).fail(function(data){
             alert("Failed(YC)");
