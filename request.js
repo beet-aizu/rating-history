@@ -33,6 +33,18 @@ function getData(){
     getAtCoder();
     getSolved();
 }
+
+function getJson(url){
+    return $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : url,
+		        dataType : 'json',
+		        timeout  : 20000,
+		        cache    : false,
+	      });        
+}
+
 function getTopCoder(){
     var handle = document.getElementById("handle_topcoder").value;
     if(handle == ""){
@@ -40,25 +52,18 @@ function getTopCoder(){
 	      drawGraphs();
 	      return;
     }
-    var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 10000,
-		        cache    : false,
-	      }).done(function(data){
-	          history_topcoder = data;
-	          flag_topcoder = true;
-	          drawGraphs();
-		        console.log(data);
-	      }).fail(function(data){
-	          alert("Failed(TC)");
-	          flag_topcoder = true;
-	          drawGraphs();
-		        console.log(data);
-	      });
+    var url =
+        "https://api.topcoder.com/v2/users/"
+        + handle
+        + "/statistics/data/srm";
+    getJson(url).done(function(data){
+	      history_topcoder = data;
+	  }).fail(function(data){
+	      alert("Failed(TC)");
+	  }).always(function(data){        
+        flag_topcoder = true;
+        drawGraphs();
+    });    
 }
 
 function getCodeForces(){
@@ -69,24 +74,14 @@ function getCodeForces(){
 	      return;
     }
     var url = "https://codeforces.com/api/user.rating?handle=" + handle;    
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 50000,
-		        cache    : false,
-	      }).done(function(data){
-            history_codeforces = data;
-	          flag_codeforces = true;
-	          drawGraphs();
-		        console.log(data);
-	      }).fail(function(data){
-	          alert("Failed(CF)");
-	          flag_codeforces = true;
-	          drawGraphs();
-		        console.log(data);
-	      });
+    getJson(url).done(function(data){
+	      history_codeforces = data;
+	  }).fail(function(data){
+	      alert("Failed(CF)");
+	  }).always(function(data){        
+        flag_codeforces = true;
+        drawGraphs();
+    });   
 }
 
 function getAtCoder(){
@@ -96,24 +91,18 @@ function getAtCoder(){
 	      drawGraphs();
 	      return;
     }
-	  var url = "ajax.php?url=https://atcoder.jp/users/" + handle +"/history/json";
-	  $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 10000,
-		        cache    : false,
-	      }).done(function(data){
-		        history_atcoder = data;
-		        flag_atcoder = true;
-		        drawGraphs();
-	      }).fail(function(data){
-		        alert("Failed(AC)");
-		        flag_atcoder = true;
-		        drawGraphs();
-		        console.log(data);
-	      });
+	  var url =
+        "ajax.php?url=https://atcoder.jp/users/"
+        + handle
+        + "/history/json";
+	  getJson(url).done(function(data){
+	      history_atcoder = data;
+	  }).fail(function(data){
+	      alert("Failed(AC)");
+	  }).always(function(data){        
+        flag_atcoder = true;
+        drawGraphs();
+    });  
 }
 
 var w = 400;
@@ -261,35 +250,26 @@ function getSolvedTC(){
 	      drawTable();
 	      return;
     }
-    var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 10000,
-		        cache    : false,
-	      }).done(function(data){
-            var jsonTC = data;
-            console.log(jsonTC)
-            
-	          solved_topcoder = 0;
-	          var div1 = jsonTC["Divisions"]["Division I" ]["Level Total"];
-	          var div2 = jsonTC["Divisions"]["Division II"]["Level Total"];
-	          solved_topcoder += div1["submitted"];
-	          solved_topcoder -= div1["failedChallenge"];
-	          solved_topcoder -= div1["failedSys.Test"];
-	          solved_topcoder += div2["submitted"];
-	          solved_topcoder -= div2["failedChallenge"];
-	          solved_topcoder -= div2["failedSys.Test"];
-	          
-	          drawTable();
-	      }).fail(function(data){
-            alert("Failed(TC)");
-	          solved_topcoder = 0;
-	          drawTable();
-		        console.log(data);
-	      });
+    var url =
+        "https://api.topcoder.com/v2/users/"
+        + handle
+        + "/statistics/data/srm";
+    getJson(url).done(function(data){
+	      solved_topcoder = 0;
+	      var div1 = data["Divisions"]["Division I" ]["Level Total"];
+	      var div2 = data["Divisions"]["Division II"]["Level Total"];
+	      solved_topcoder += div1["submitted"];
+	      solved_topcoder -= div1["failedChallenge"];
+	      solved_topcoder -= div1["failedSys.Test"];
+	      solved_topcoder += div2["submitted"];
+	      solved_topcoder -= div2["failedChallenge"];
+	      solved_topcoder -= div2["failedSys.Test"];
+	  }).fail(function(data){
+	      alert("Failed(TC)");
+	      solved_topcoder = 0;
+	  }).always(function(data){        
+	      drawTable();
+    });
 }
 
 function getSolvedCF(){
@@ -300,46 +280,37 @@ function getSolvedCF(){
 	      return;
     }
     var url = "https://codeforces.com/api/user.status?handle=" + handle;    
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 20000,
-		        cache    : false,
-	      }).done(function(data){
-            var jsonCF = data;
-            console.log(jsonCF)
-	          if(jsonCF.result==null){
-		            solved_codeforces = 0;
-		            drawTable();
-	          }
-	          var json = jsonCF.result;
-	          var problems = {};
-	          solved_codeforces = 0;
-	          for(var i = 0; i < json.length; i++){
-		            if(json[i].verdict != "OK" ||
-		               json[i].testset != "TESTS" )  continue;
-		            
-		            var prob = json[i].problem;
-		            if(problems[prob.contestId] != undefined){
-		                if(problems[prob.contestId][prob.name] == undefined){
-			                  problems[prob.contestId][prob.name] = 1;
-			                  solved_codeforces += 1;
-		                }
-		            }else{
-		                problems[prob.contestId] = {};
-		                problems[prob.contestId][prob.name] = 1;
-		                solved_codeforces += 1;
+    getJson(url).done(function(data){
+	      if(data.result==null){
+		        solved_codeforces = 0;
+		        drawTable();
+            return;
+	      }
+	      var json = data.result;
+	      var problems = {};
+	      solved_codeforces = 0;
+	      for(var i = 0; i < json.length; i++){
+		        if(json[i].verdict != "OK" ||
+		           json[i].testset != "TESTS" )  continue;
+		        
+		        var prob = json[i].problem;
+		        if(problems[prob.contestId] != undefined){
+		            if(problems[prob.contestId][prob.name] == undefined){
+			              problems[prob.contestId][prob.name] = 1;
+			              solved_codeforces += 1;
 		            }
-	          }
-	          drawTable();
-	      }).fail(function(data){
-            alert("Failed(CF)");
-	          solved_codeforces = 0;
-	          drawTable();
-		        console.log(data);
-	      });
+		        }else{
+		            problems[prob.contestId] = {};
+		            problems[prob.contestId][prob.name] = 1;
+		            solved_codeforces += 1;
+		        }
+	      }
+	  }).fail(function(data){
+        alert("Failed(CF)");
+	      solved_codeforces = 0;
+	  }).always(function(data){        
+	      drawTable();
+    });
 }
 function getSolvedAC(){
     var handle = document.getElementById("handle_atcoder").value;
@@ -348,26 +319,17 @@ function getSolvedAC(){
 	      drawTable();
 	      return;
     }
-    var url = "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user=" + handle;
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 20000,
-		        cache    : false,
-	      }).done(function(data){
-	          var jsonAC = data;
-            console.log(jsonAC)
-            solved_atcoder = jsonAC.accepted_count;
-	          if(solved_atcoder == null) solved_atcoder = 0;
-	          drawTable();
-	      }).fail(function(data){
-		        alert("Failed(AC)");
-	          solved_atcoder = 0;
-	          drawTable();
-		        console.log(data);
-	      });
+    var url =
+        "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user="
+        + handle;
+    getJson(url).done(function(data){   
+        solved_atcoder = data.accepted_count;
+	  }).fail(function(data){
+		    alert("Failed(AC)");
+	      solved_atcoder = 0;
+	  }).always(function(data){        
+	      drawTable();
+    });
 }
 function getSolvedAOJ(){
     var handle = document.getElementById("handle_aoj").value;
@@ -377,23 +339,14 @@ function getSolvedAOJ(){
 	      return;
     }
     var url = "https://judgeapi.u-aizu.ac.jp/users/" + handle;
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 20000,
-		        cache    : false,
-	      }).done(function(data){
-	          var jsonAOJ = data;
-	          solved_aoj = jsonAOJ.status.solved;
-	          drawTable();
-	      }).fail(function(data){
-            alert("Failed(AOJ)");
-	          solved_aoj = 0;
-	          drawTable();
-		        console.log(data);
-	      });
+    getJson(url).done(function(data){
+	      solved_aoj = data.status.solved;
+	  }).fail(function(data){
+		    alert("Failed(AOJ)");
+	      solved_aoj = 0;
+	  }).always(function(data){        
+	      drawTable();
+    });
 }
 
 function getSolvedYC(){
@@ -403,24 +356,17 @@ function getSolvedYC(){
 	      drawTable();
 	      return;
     }
-    var url = "https://yukicoder.me/api/v1/user/name/" + encodeURIComponent(handle);
-    $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 20000,
-		        cache    : false,
-	      }).done(function(data){	          
-	          var jsonYC = data;
-	          solved_yukicoder = jsonYC.Solved;
-	          drawTable();
-	      }).fail(function(data){
-            alert("Failed(YC)");
-	          solved_yukicoder = 0;
-	          drawTable();
-		        console.log(data);
-	      });
+    var url =
+        "https://yukicoder.me/api/v1/user/name/"
+        + encodeURIComponent(handle);
+    getJson(url).done(function(data){
+	      solved_yukicoder = data.Solved;
+	  }).fail(function(data){        
+        alert("Failed(YC)");
+	      solved_yukicoder = 0;
+	  }).always(function(data){        
+	      drawTable();
+    });
 }
 
 
@@ -524,7 +470,7 @@ $(document).ready(function(){
     if(result["handle_aoj"])
 	      document.wrapper.handle_aoj.value        = result["handle_aoj"];
     if(result["handle_yukicoder"])
-	      document.wrapper.handle_yukicoder.value        = result["handle_yukicoder"];
+	      document.wrapper.handle_yukicoder.value  = result["handle_yukicoder"];
     
     solved_topcoder   = -1;
     solved_codeforces = -1;
