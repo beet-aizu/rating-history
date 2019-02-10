@@ -96,7 +96,7 @@ function getAtCoder(){
 	      drawGraphs();
 	      return;
     }
-	  var url = "http://localhost/ajax.php?url=https://atcoder.jp/users/" + handle +"/history/json";
+	  var url = "ajax.php?url=https://atcoder.jp/users/" + handle +"/history/json";
 	  $.ajax(
 	      {
 		        type     : 'GET',
