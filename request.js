@@ -96,7 +96,7 @@ function getAtCoder(){
 	      drawGraphs();
 	      return;
     }
-	  var url = "https://atcoder.jp/users/" + handle +"/history/json";
+	  var url = "http://localhost/ajax.php?url=https://atcoder.jp/users/" + handle +"/history/json";
 	  $.ajax(
 	      {
 		        type     : 'GET',
@@ -105,7 +105,6 @@ function getAtCoder(){
 		        timeout  : 10000,
 		        cache    : false,
 	      }).done(function(data){
-		        console.log(data);
 		        history_atcoder = data;
 		        flag_atcoder = true;
 		        drawGraphs();
@@ -139,6 +138,7 @@ function drawGraphs(){
 	          "y": json[i].rating
 	      });
     }
+    
     if(history_codeforces != undefined)
 	      json = history_codeforces.result;
     else json = undefined;
@@ -150,12 +150,12 @@ function drawGraphs(){
     }
     
     if(history_atcoder != undefined)
-	      json = history_atcoder.query.results.json.json;
+	      json = history_atcoder;
     else json = undefined;
     for(i = 0; json != undefined && i < json.length; i++){
-	      if(json[i]['IsRated'] != "true") continue;
+	      if(!json[i]['IsRated']) continue;
 	      var tmp = json[i]['EndTime'].replace(/\./g,"/");
-	      list_atcoder.push({
+        list_atcoder.push({
 	          "x": new Date(tmp).getTime() / 1000,
 	          "y": json[i]['NewRating'] / 1.0
 	      });
