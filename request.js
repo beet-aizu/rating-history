@@ -41,24 +41,24 @@ function getTopCoder(){
 	      return;
     }
     var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
-    var request = new XMLHttpRequest();
-    request.open('GET', url);
-    request.onreadystatechange = function () {
-	      if (request.readyState != 4) {
-            // リクエスト中
-	      } else if (request.status != 200) {
-            alert("Failed(TC)");
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : url,
+		        dataType : 'json',
+		        timeout  : 10000,
+		        cache    : false,
+	      }).done(function(data){
+	          history_topcoder = data;
 	          flag_topcoder = true;
 	          drawGraphs();
-	      } else {
-            // 取得成功
-            var result = request.responseText;
-	          history_topcoder = JSON.parse(result);
+		        console.log(data);
+	      }).fail(function(data){
+	          alert("Failed(TC)");
 	          flag_topcoder = true;
 	          drawGraphs();
-	      }
-    };
-    request.send(null);
+		        console.log(data);
+	      });
 }
 
 function getCodeForces(){
@@ -74,7 +74,7 @@ function getCodeForces(){
 		        type     : 'GET',
 		        url      : url,
 		        dataType : 'json',
-		        timeout  : 10000,
+		        timeout  : 50000,
 		        cache    : false,
 	      }).done(function(data){
             history_codeforces = data;
@@ -262,19 +262,17 @@ function getSolvedTC(){
 	      return;
     }
     var url = "https://api.topcoder.com/v2/users/" + handle + "/statistics/data/srm";
-    var request = new XMLHttpRequest();
-    request.open('GET', url);
-    request.onreadystatechange = function () {
-	      if (request.readyState != 4) {
-            // リクエスト中
-	      } else if (request.status != 200) {
-            alert("Failed(TC)");
-	          solved_topcoder = 0;
-	          drawTable();
-	      } else {
-            // 取得成功
-            var result = request.responseText;
-	          var jsonTC = JSON.parse(result);
+    $.ajax(
+	      {
+		        type     : 'GET',
+		        url      : url,
+		        dataType : 'json',
+		        timeout  : 10000,
+		        cache    : false,
+	      }).done(function(data){
+            var jsonTC = data;
+            console.log(jsonTC)
+            
 	          solved_topcoder = 0;
 	          var div1 = jsonTC["Divisions"]["Division I" ]["Level Total"];
 	          var div2 = jsonTC["Divisions"]["Division II"]["Level Total"];
@@ -284,10 +282,14 @@ function getSolvedTC(){
 	          solved_topcoder += div2["submitted"];
 	          solved_topcoder -= div2["failedChallenge"];
 	          solved_topcoder -= div2["failedSys.Test"];
+	          
 	          drawTable();
-	      }
-    };
-    request.send(null);
+	      }).fail(function(data){
+            alert("Failed(TC)");
+	          solved_topcoder = 0;
+	          drawTable();
+		        console.log(data);
+	      });
 }
 
 function getSolvedCF(){
