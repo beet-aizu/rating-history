@@ -1,33 +1,37 @@
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    
     <title>Average</title>    
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     
     <script src="view2.js"></script>    
   </head>
-  
-  <main>
-    <section>
-      <h2>AtCoder平均</h2>
-      <p>ABC, ARC, AGC それぞれの平均順位とパフォーマンスをしらべます。</p>
+  <body>
+    <main>
+      <section>
+        <h2>AtCoder平均</h2>
+        <p>ABC, ARC, AGC それぞれの平均順位とパフォーマンスをしらべます。</p>
 
-      <form method="get">
-        handle: <input type="text" id="handle" name="handle"><br>
-        直近(空欄=inf): <input type="number" id="number" name="number"> ヶ月<br>
-        <input type="submit" value="send">
-      </form>
+        <form method="get">
+          handle: <input type="text" id="handle" name="handle"><br>
+          直近(空欄=inf): <input type="number" id="number" name="number"> ヶ月<br>
+          <input type="submit" value="send">
+        </form>
 
-      <h4>結果</h4>
-      <ul>
-        <li>All: <b><span id="now_all">Loading...</span></b>
-        <li>AGC: <b><span id="now_agc">Loading...</span></b>
-        <li>ARC: <b><span id="now_arc">Loading...</span></b>
-        <li>ABC: <b><span id="now_abc">Loading...</span></b>
-        <li>Other: <b><span id="now_oth">Loading...</span></b>
-      </ul>
-    </section>
-  </main>
-
-  Special Thanks: ei1333(@ei1333) <a href="https://ei1333.github.io/beet/average.html">uku</a>
+        <h4>結果</h4>
+        <ul>
+          <li>All: <b><span id="now_all">Loading...</span></b>
+          <li>AGC: <b><span id="now_agc">Loading...</span></b>
+          <li>ARC: <b><span id="now_arc">Loading...</span></b>
+          <li>ABC: <b><span id="now_abc">Loading...</span></b>
+          <li>Other: <b><span id="now_oth">Loading...</span></b>
+        </ul>
+      </section>
+    </main>
+  </body>
+  Special Thanks: ei1333(@ei1333) <br>
+  <a href="https://ei1333.github.io/beet/average.html">uku</a>
 </html>
