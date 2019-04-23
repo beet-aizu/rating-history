@@ -48,25 +48,21 @@ $(function()
 	    var url =
           "ajax.php?url=https://atcoder.jp/users/"
           + handle
-          + "/history";
+          + "/history/json";
       
 	    getJson(url).done(function(data)
-                        {
-                            var str = $.parseXML(data.query.results.result).documentElement;
-                            var $xml = $(str);
-                            var value = $xml.find("td");
-
+                        {                            
                             var sum0 = [0, 0, 0, 0];
                             var sum1 = [0, 0, 0, 0];
                             var sum2 = [0, 0, 0, 0];
                             var sum3 = [0, 0, 0, 0];
                             var sum4 = [0, 0, 0, 0];
-
-                            for(var i = 0; i < value.length; i += 6) {
-                                var date = value[i + 0].innerHTML;
-                                var name = value[i + 1].innerHTML;
-                                var rank = value[i + 2].innerHTML;
-                                var perf = value[i + 3].innerHTML;
+                            
+                            for(var i = 0; i < data.length; i ++) {
+                                var date = data[i].EndTime;
+                                var name = data[i].ContestName;
+                                var rank = data[i].Place;
+                                var perf = data[i].Performance;
                                 if(new Date(date) < dt) continue;
 
                                 if(name.indexOf("Grand Contest") != -1) {
