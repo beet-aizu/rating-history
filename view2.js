@@ -48,7 +48,7 @@ $(function()
 	    var url =
           "ajax.php?url=https://atcoder.jp/users/"
           + handle
-          + "/history/json";
+          + "/history";
       
 	    getJson(url).done(function(data)
                         {
