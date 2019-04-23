@@ -58,7 +58,8 @@ $(function()
                             var sum3 = [0, 0, 0, 0];
                             var sum4 = [0, 0, 0, 0];
                             
-                            for(var i = 0; i < data.length; i ++) {
+                            for(var i = 0; i < data.length; i++ ) {
+                                var isRated = data[i].IsRated;
                                 var date = data[i].EndTime;
                                 var name = data[i].ContestName;
                                 var rank = data[i].Place;
@@ -68,28 +69,28 @@ $(function()
                                 if(name.indexOf("Grand Contest") != -1) {
                                     sum1[0]++;
                                     sum1[1] += parseInt(rank);
-                                    if(perf != "-") {
+                                    if(isRated) {
                                         sum1[2]++;
                                         sum1[3] += parseInt(perf);
                                     }
                                 } else if(name.indexOf("Regular Contest") != -1) {
                                     sum2[0]++;
                                     sum2[1] += parseInt(rank);
-                                    if(perf != "-") {
+                                    if(isRated) {
                                         sum2[2]++;
                                         sum2[3] += parseInt(perf);
                                     }
                                 } else if(name.indexOf("Beginner Contest") != -1) {
                                     sum3[0]++;
                                     sum3[1] += parseInt(rank);
-                                    if(perf != "-") {
+                                    if(isRated) {
                                         sum3[2]++;
                                         sum3[3] += parseInt(perf);
                                     }
                                 } else {
                                     sum4[0]++;
                                     sum4[1] += parseInt(rank);
-                                    if(perf != "-") {
+                                    if(isRated) {
                                         sum4[2]++;
                                         sum4[3] += parseInt(perf);
                                     }
@@ -97,7 +98,7 @@ $(function()
 
                                 sum0[0]++;
                                 sum0[1] += parseInt(rank);
-                                if(perf != "-") {
+                                if(isRated) {
                                     sum0[2]++;
                                     sum0[3] += parseInt(perf);
                                 }
