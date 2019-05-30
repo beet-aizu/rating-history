@@ -5,10 +5,7 @@
     <title>Index</title>
   </head>
   <body>
-       <a href="./index.html"> Rating History </a>
-       <a href="./average.html"> Average </a>
+       <a href="./index.html"> Rating History </a> <br>
+       <a href="./average.html"> Average </a> <br>
   </body>
 </html>      
-<?php
-echo 'Hello World!';
-?>
