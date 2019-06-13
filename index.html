@@ -14,6 +14,7 @@
     <title>Rating History</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
     <script src="request.js"></script>
     <style>
       svg { border: 1px solid black; }
@@ -40,6 +41,7 @@
     <div id="rating_atcoder"></div>
 
     <div id="graphs"></div>
+    <a id="image">Download graph as an image</a><br>
     TopCoder's problems are considered only if you solve them in the contests.<br>
     (Submissions in practice rooms are ignored due to API specification)
     <div id="solved"></div>
@@ -50,6 +52,6 @@
     データ収集のために Cookie を使用しています<br>
     Google アナリティクスを使用しています<br>
     詳しくは　<a href="https://policies.google.com/technologies/partner-sites?hl=ja">こちら</a><br>
-    
+
   </body>
 </html>

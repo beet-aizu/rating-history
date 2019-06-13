@@ -42,7 +42,7 @@ function getJson(url){
 		        dataType : 'json',
 		        timeout  : 20000,
 		        cache    : false,
-	      });        
+	      });
 }
 
 function getTopCoder(){
@@ -60,10 +60,10 @@ function getTopCoder(){
 	      history_topcoder = data;
 	  }).fail(function(data){
 	      alert("Failed(TC)");
-	  }).always(function(data){        
+	  }).always(function(data){
         flag_topcoder = true;
         drawGraphs();
-    });    
+    });
 }
 
 function getCodeForces(){
@@ -73,15 +73,15 @@ function getCodeForces(){
 	      drawGraphs();
 	      return;
     }
-    var url = "https://codeforces.com/api/user.rating?handle=" + handle;    
+    var url = "https://codeforces.com/api/user.rating?handle=" + handle;
     getJson(url).done(function(data){
 	      history_codeforces = data;
 	  }).fail(function(data){
 	      alert("Failed(CF)");
-	  }).always(function(data){        
+	  }).always(function(data){
         flag_codeforces = true;
         drawGraphs();
-    });   
+    });
 }
 
 function getAtCoder(){
@@ -99,10 +99,10 @@ function getAtCoder(){
 	      history_atcoder = data;
 	  }).fail(function(data){
 	      alert("Failed(AC)");
-	  }).always(function(data){        
+	  }).always(function(data){
         flag_atcoder = true;
         drawGraphs();
-    });  
+    });
 }
 
 var w = 400;
@@ -127,7 +127,7 @@ function drawGraphs(){
 	          "y": json[i].rating
 	      });
     }
-    
+
     if(history_codeforces != undefined)
 	      json = history_codeforces.result;
     else json = undefined;
@@ -137,7 +137,7 @@ function drawGraphs(){
 	          "y": json[i].newRating
 	      });
     }
-    
+
     if(history_atcoder != undefined)
 	      json = history_atcoder;
     else json = undefined;
@@ -149,13 +149,13 @@ function drawGraphs(){
 	          "y": json[i]['NewRating'] / 1.0
 	      });
     }
-    
+
     if(!true){
 	      document.getElementById("rating_topcoder"  ).innerHTML = list_topcoder;
 	      document.getElementById("rating_codeforces").innerHTML = list_codeforces;
 	      document.getElementById("rating_atcoder"   ).innerHTML = list_atcoder;
-    }    
-    
+    }
+
     if(list_topcoder.length != 0){
 	      minx = list_topcoder[0].x;
 	      maxx = list_topcoder[0].x;
@@ -179,20 +179,33 @@ function drawGraphs(){
 	      alert(miny);
 	      alert(maxy);
     }
-    
+
     var svg = d3.select("#graphs")
 	      .append("svg")
+	      .attr("id", "svg1")
 	      .attr("width", w)
 	      .attr("height", h);
-    
+
+    svg.append("rect")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("fill", "white");
+
     drawGraph(list_topcoder  , svg, "red");
     drawGraph(list_codeforces, svg, "blue");
     drawGraph(list_atcoder   , svg, "green");
-    
+
     list_topcoder = [];
     list_codeforces = [];
     list_atcoder = [];
 
+    var source = (new XMLSerializer()).serializeToString(d3.select('#svg1').node());
+    var canvas = $('<canvas>').get(0);
+    canvg(canvas, source);
+    var png = canvas.toDataURL();
+    $("#image")
+        .attr("download", "graph.png")
+        .attr("href", png);
 }
 
 function getRange(list){
@@ -207,16 +220,16 @@ function getRange(list){
 
 function drawGraph(list, svg, color){
     if(list == undefined || list == null || list.length < 2) return;
-    
-    
+
+
     miny = list[0].y;
     maxy = list[0].y;
-    
+
     for(i = 0; i < list.length; i++){
 	      if(miny > list[i].y) miny = list[i].y;
 	      if(maxy < list[i].y) maxy = list[i].y;
     }
-    
+
     var line = d3.svg.line()
 	      .x(function(d){return w * (d.x - minx) / (maxx - minx);})
 	      .y(function(d){return h * (1.0 - (d.y - miny) / (maxy - miny));});
@@ -267,7 +280,7 @@ function getSolvedTC(){
 	  }).fail(function(data){
 	      alert("Failed(TC)");
 	      solved_topcoder = 0;
-	  }).always(function(data){        
+	  }).always(function(data){
 	      drawTable();
     });
 }
@@ -279,7 +292,7 @@ function getSolvedCF(){
 	      drawTable();
 	      return;
     }
-    var url = "https://codeforces.com/api/user.status?handle=" + handle;    
+    var url = "https://codeforces.com/api/user.status?handle=" + handle;
     getJson(url).done(function(data){
 	      if(data.result==null){
 		        solved_codeforces = 0;
@@ -292,7 +305,7 @@ function getSolvedCF(){
 	      for(var i = 0; i < json.length; i++){
 		        if(json[i].verdict != "OK" ||
 		           json[i].testset != "TESTS" )  continue;
-		        
+
 		        var prob = json[i].problem;
 		        if(problems[prob.contestId] != undefined){
 		            if(problems[prob.contestId][prob.name] == undefined){
@@ -308,7 +321,7 @@ function getSolvedCF(){
 	  }).fail(function(data){
         alert("Failed(CF)");
 	      solved_codeforces = 0;
-	  }).always(function(data){        
+	  }).always(function(data){
 	      drawTable();
     });
 }
@@ -322,12 +335,12 @@ function getSolvedAC(){
     var url =
         "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user="
         + handle;
-    getJson(url).done(function(data){   
+    getJson(url).done(function(data){
         solved_atcoder = data.accepted_count;
 	  }).fail(function(data){
 		    alert("Failed(AC)");
 	      solved_atcoder = 0;
-	  }).always(function(data){        
+	  }).always(function(data){
 	      drawTable();
     });
 }
@@ -344,7 +357,7 @@ function getSolvedAOJ(){
 	  }).fail(function(data){
 		    alert("Failed(AOJ)");
 	      solved_aoj = 0;
-	  }).always(function(data){        
+	  }).always(function(data){
 	      drawTable();
     });
 }
@@ -361,10 +374,10 @@ function getSolvedYC(){
         + encodeURIComponent(handle);
     getJson(url).done(function(data){
 	      solved_yukicoder = data.Solved;
-	  }).fail(function(data){        
+	  }).fail(function(data){
         alert("Failed(YC)");
 	      solved_yukicoder = 0;
-	  }).always(function(data){        
+	  }).always(function(data){
 	      drawTable();
     });
 }
@@ -387,20 +400,20 @@ function drawTable(){
        solved_aoj        == null) solved_aoj = 0;
     if(solved_yukicoder  == undefined ||
        solved_yukicoder  == null) solved_yukicoder = 0;
-    
+
     solved_topcoder *= 1.0;
     solved_codeforces *= 1.0;
     solved_atcoder *= 1.0;
     solved_aoj *= 1.0;
     solved_yukicoder *= 1.0;
-    
+
     solved_sum = 0;
     solved_sum += solved_topcoder;
     solved_sum += solved_codeforces;
     solved_sum += solved_atcoder;
     solved_sum += solved_yukicoder;
     solved_sum += solved_aoj;
-    
+
     document.getElementById("solved").innerHTML =
 	      "Solved: "
 	      +"<table border=\"1px\">"
@@ -471,12 +484,12 @@ $(document).ready(function(){
 	      document.wrapper.handle_aoj.value        = result["handle_aoj"];
     if(result["handle_yukicoder"])
 	      document.wrapper.handle_yukicoder.value  = result["handle_yukicoder"];
-    
+
     solved_topcoder   = -1;
     solved_codeforces = -1;
     solved_atcoder    = -1;
     solved_aoj        = -1;
     solved_yukicoder  = -1;
-    
+
     getData();
 });
