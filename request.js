@@ -443,11 +443,7 @@ function drawTable(){
 	      +"</tr>"
 	      +"</table>";
     var tweet = "";
-    var handle = document.getElementById("handle_topcoder").value;
-    if(handle == "") handle = document.getElementById("handle_codeforces").value;
-    if(handle == "") handle = document.getElementById("handle_atcoder").value;
-    if(handle == "") handle = document.getElementById("handle_aoj").value;
-    if(handle == "") handle = document.getElementById("handle_yukicoder").value;
+    var handle = document.getElementById("select_handle").value;
     tweet += "Solved By " + handle + "\n";
     tweet += "TopCoder: " + solved_topcoder + "\n";
     tweet += "CodeForces: " + solved_codeforces + "\n";
@@ -462,6 +458,22 @@ function drawTable(){
     $("#tweet").appendTweetButton($(location).attr('href'), tweet);
 }
 
+function updateSelecter(){
+    $('#select_handle > option').remove();
+    list = ["handle_topcoder",
+            "handle_codeforces",
+            "handle_atcoder",
+            "handle_aoj",
+            "handle_yukicoder"];
+    list.forEach(function(v){
+        s = document.getElementById(v).value;
+        if(s != "" && $("#select_handle option[value="+s+"]").length == 0)
+            $('#select_handle').append($('<option>')
+                                       .html(s)
+                                       .val(s));
+    });
+}
+
 $(document).ready(function(){
     var result = {};
     if(1 < window.location.search.length) {
@@ -474,6 +486,7 @@ $(document).ready(function(){
             result[paramName] = paramValue;
         }
     }
+
     if(result["handle_topcoder"])
 	      document.wrapper.handle_topcoder.value   = result["handle_topcoder"];
     if(result["handle_codeforces"])
@@ -484,6 +497,22 @@ $(document).ready(function(){
 	      document.wrapper.handle_aoj.value        = result["handle_aoj"];
     if(result["handle_yukicoder"])
 	      document.wrapper.handle_yukicoder.value  = result["handle_yukicoder"];
+
+    updateSelecter();
+    list = ["#handle_topcoder",
+            "#handle_codeforces",
+            "#handle_atcoder",
+            "#handle_aoj",
+            "#handle_yukicoder"];
+
+    list.forEach(function(v){
+        $(v).change(function(){
+            updateSelecter();
+        });
+    });
+
+    if(result["select_handle"])
+	      $('#select_handle').val(result["select_handle"]);
 
     solved_topcoder   = -1;
     solved_codeforces = -1;
