@@ -467,7 +467,7 @@ function updateSelecter(){
             "handle_yukicoder"];
     list.forEach(function(v){
         s = document.getElementById(v).value;
-        if(s != "" && $("#select_handle option[value="+s+"]").length == 0)
+        if(s != "" && $("#select_handle option[value='"+s+"']").length == 0)
             $('#select_handle').append($('<option>')
                                        .html(s)
                                        .val(s));
