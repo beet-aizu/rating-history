@@ -16,14 +16,15 @@
   <body>
        <a href="./index.html"> Rating History </a> <br>
        <a href="./average.html"> Average </a> <br>
+       <a href="./setter.html"> Problem Setter </a> <br>
        <a href="./beetbeet.html"> ??? </a> <br>
-              
-    
+
+
     <br>
     プライバシー ポリシー:<br>
     データ収集のために Cookie を使用しています<br>
     Google アナリティクスを使用しています<br>
     詳しくは　<a href="https://policies.google.com/technologies/partner-sites?hl=ja">こちら</a><br>
-    
+
   </body>
-</html>      
+</html>
