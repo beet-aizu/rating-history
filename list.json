@@ -1,14 +1,14 @@
 {
-    list: [
-	{id: "2534", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_a"},
-	{id: "2535", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_b"},
-	{id: "2536", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_c"},
-	{id: "2537", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_d"},
-	{id: "2538", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_e"},
-	{id: "2539", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_f"},
-	{id: "2540", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_g"},
-	{id: "2541", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_h"},
-	{id: "2542", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_i"},
-	{id: "2543", contest_id: "jag2012autumn", problem_id: "icpc2012autumn_j"},
+    "list" : [
+	{"id" : "2534", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_a"},
+	{"id" : "2535", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_b"},
+	{"id" : "2536", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_c"},
+	{"id" : "2537", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_d"},
+	{"id" : "2538", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_e"},
+	{"id" : "2539", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_f"},
+	{"id" : "2540", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_g"},
+	{"id" : "2541", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_h"},
+	{"id" : "2542", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_i"},
+	{"id" : "2543", "contest_id" : "jag2012autumn", "problem_id" : "icpc2012autumn_j"},
     ]
 }
