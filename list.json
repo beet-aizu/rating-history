@@ -158,6 +158,26 @@
 	{"id": "2736", "contest_id": "jag2015autumn", "problem_id": "icpc2015autumn_j"},
 	{"id": "2737", "contest_id": "jag2015autumn", "problem_id": "icpc2015autumn_k"},
 
+	{"id": "2738", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_a"},
+	{"id": "2739", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_b"},
+	{"id": "2740", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_c"},
+	{"id": "2741", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_d"},
+	{"id": "2742", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_e"},
+	{"id": "2743", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_f"},
+	{"id": "2744", "contest_id": "jag2016-domestic", "problem_id": "jag2016secretspring_g"},
+
+	{"id": "2780", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_a"},
+	{"id": "2781", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_b"},
+	{"id": "2782", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_c"},
+	{"id": "2783", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_d"},
+	{"id": "2784", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_e"},
+	{"id": "2785", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_f"},
+	{"id": "2786", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_g"},
+	{"id": "2787", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_h"},
+	{"id": "2788", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_i"},
+	{"id": "2789", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_j"},
+	{"id": "2790", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_k"},
+
 	{"dummy": "1333"}
     ]
 }
