@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141121686-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-141121686-1');
+    </script>
+
+    <meta charset="utf-8">
+    <title>ICPC</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="icpc.js"></script>
+    <style>
+      table, th, td {
+	  border-collapse: collapse;
+	  border: 1px solid black;
+	  padding: 3px;
+      }
+      .solved {
+	  background-color: #c3e6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AOJ-ICPC Comparator</h1>
+    <form action="./icpc.html" method="get" name="wrapper">
+      AOJ ID:
+      <input type="text" id="handle_aoj"     name="handle_aoj"><br>
+      AtCoder ID:
+      <input type="text" id="handle_atcoder" name="handle_atcoder"><br>
+      <input type="submit" value="send">
+      <br>
+    </form>
+
+    Odd Only:
+    <input type="checkbox" id="odd_only"><br>
+
+    <table id="table"></table>
+
+    <br>
+    プライバシー ポリシー:<br>
+    データ収集のために Cookie を使用しています<br>
+    Google アナリティクスを使用しています<br>
+    詳しくは　<a href="https://policies.google.com/technologies/partner-sites?hl=ja">こちら</a><br>
+  </body>
+</html>

@@ -41,7 +41,6 @@ function getJson(url){
 		        url      : url,
 		        dataType : 'json',
 		        timeout  : 20000,
-		        cache    : false,
 	      });
 }
 
