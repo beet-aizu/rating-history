@@ -178,6 +178,30 @@
 	{"id": "2789", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_j"},
 	{"id": "2790", "contest_id": "jag2016autumn", "problem_id": "icpc2016autumn_k"},
 
+	{"id": "2845", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_a"},
+	{"id": "2846", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_b"},
+	{"id": "2847", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_c"},
+	{"id": "2848", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_d"},
+	{"id": "2849", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_e"},
+	{"id": "2850", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_f"},
+	{"id": "2851", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_g"},
+	{"id": "2852", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_h"},
+	{"id": "2853", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_i"},
+	{"id": "2854", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_j"},
+	{"id": "2855", "contest_id": "jag2017summer-day3", "problem_id": "jag2017summer_day3_k"},
+
+	{"id": "2856", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_a"},
+	{"id": "2857", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_b"},
+	{"id": "2858", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_c"},
+	{"id": "2859", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_d"},
+	{"id": "2860", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_e"},
+	{"id": "2861", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_f"},
+	{"id": "2862", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_g"},
+	{"id": "2863", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_h"},
+	{"id": "2864", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_i"},
+	{"id": "2865", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_j"},
+	{"id": "2866", "contest_id": "jag2017autumn", "problem_id": "jag2017autumn_k"},
+
 	{"dummy": "1333"}
     ]
 }
