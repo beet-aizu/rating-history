@@ -115,6 +115,7 @@ $(document).ready(function(){
 
     getJson("./list.json").done(function(data){
 	list = data.list;
+	list.pop();
 	getData();
     });
 
