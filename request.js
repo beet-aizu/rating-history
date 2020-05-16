@@ -1,202 +1,154 @@
-var history_topcoder;
-var history_codeforces;
-var history_atcoder;
-var list_topcoder = [];
-var list_codeforces = [];
-var list_atcoder = [];
-var flag_topcoder;
-var flag_codeforces;
-var flag_atcoder;
-var solved_topcoder;
-var solved_codeforces;
-var solved_atcoder;
-var solved_aoj;
-var solved_yukicoder;
-var solved_sum;
+var rated = ["topcoder", "codeforces", "atcoder"];
+var history, line, cnt;
 
-// risky
-var tmp;
-
-function getData(){
-    d3.select("#graphs").selectAll("svg").remove();
-    history_topcoder = undefined;
-    history_codeforces = undefined;
-    history_atcoder = undefined;
-    list_topcoder = [];
-    list_codeforces = [];
-    list_atcoder = [];
-    flag_topcoder = false;
-    flag_codeforces = false;
-    flag_atcoder = false;
-    getTopCoder();
-    getCodeForces();
-    getAtCoder();
-    getSolved();
-}
+var onlinejudge = ["topcoder", "codeforces", "atcoder", "aoj", "yukicoder", "librarychecker"];
+var solved, num;
 
 function getJson(url){
     return $.ajax(
-	      {
-		        type     : 'GET',
-		        url      : url,
-		        dataType : 'json',
-		        timeout  : 20000,
-	      });
+	{
+	    type     : 'GET',
+	    url      : url,
+	    dataType : 'json',
+	    timeout  : 20000,
+	});
 }
 
-function getTopCoder(){
-    var handle = document.getElementById("handle_topcoder").value;
-    if(handle == ""){
-	      flag_topcoder = true;
-	      drawGraphs();
-	      return;
-    }
-    var url =
-        "https://api.topcoder.com/v2/users/"
+function getHandle(cite){
+    return document.getElementById("handle_" + cite).value;
+}
+
+function getHistoryUrl(cite, handle){
+    if(cite == "topcoder")
+	return "https://api.topcoder.com/v2/users/"
         + handle
         + "/statistics/data/srm";
-    getJson(url).done(function(data){
-	      history_topcoder = data;
-	  }).fail(function(data){
-	      alert("Failed(TC)");
-	  }).always(function(data){
-        flag_topcoder = true;
-        drawGraphs();
-    });
-}
 
-function getCodeForces(){
-    var handle = document.getElementById("handle_codeforces").value;
-    if(handle == ""){
-	      flag_codeforces = true;
-	      drawGraphs();
-	      return;
-    }
-    var url = "https://codeforces.com/api/user.rating?handle=" + handle;
-    getJson(url).done(function(data){
-	      history_codeforces = data;
-	  }).fail(function(data){
-	      alert("Failed(CF)");
-	  }).always(function(data){
-        flag_codeforces = true;
-        drawGraphs();
-    });
-}
+    if(cite == "codeforces")
+	return "https://codeforces.com/api/user.rating?handle=" + handle;
 
-function getAtCoder(){
-    var handle = document.getElementById("handle_atcoder").value;
-    if(handle == ""){
-	      flag_atcoder = true;
-	      drawGraphs();
-	      return;
-    }
-	  var url =
-        "ajax.php?url=https://atcoder.jp/users/"
+    if(cite == "atcoder")
+	return "ajax.php?url=https://atcoder.jp/users/"
         + handle
         + "/history/json";
-	  getJson(url).done(function(data){
-	      history_atcoder = data;
-	  }).fail(function(data){
-	      alert("Failed(AC)");
-	  }).always(function(data){
-        flag_atcoder = true;
+}
+
+function getHistory(cite){
+    var handle = getHandle(cite);
+    if(handle == ""){
+	cnt++;
+	drawGraphs();
+	return;
+    }
+    var url = getHistoryUrl(cite, handle);
+    getJson(url).done(function(data){
+	history[cite] = data;
+    }).fail(function(data){
+	alert("Failed " + cite);
+    }).always(function(data){
+        cnt++;
         drawGraphs();
     });
 }
 
-var w = 400;
-var h = 300;
-var minx,maxx,miny,maxy;
-
 function drawGraphs(){
-    if(!flag_topcoder || !flag_codeforces || !flag_atcoder) return;
-    if(!true){
-	      alert(history_topcoder);
-	      alert(history_codeforces);
-	      alert(history_atcoder);
-    }
-    var json;
-    if(history_topcoder != undefined)
-	      json = history_topcoder.History;
-    else json = undefined;
-    for(i = 0; json != undefined && i < json.length; i++){
-	      var tmp = json[i].date.replace(/\./g,"/");
-	      list_topcoder.push({
-	          "x": new Date(tmp).getTime() / 1000,
-	          "y": json[i].rating
-	      });
+    if(cnt < rated.length) return;
+    if(history.size == 0) return;
+
+    if(history['topcoder']){
+	var json = history['topcoder'].History;
+	line['topcoder'] = [];
+	for(i = 0; i < json.length; i++){
+	    var tmp = json[i].date.replace(/\./g,"/");
+	    line['topcoder'].push({
+		"x": new Date(tmp).getTime() / 1000,
+		"y": json[i].rating
+	    });
+	}
     }
 
-    if(history_codeforces != undefined)
-	      json = history_codeforces.result;
-    else json = undefined;
-    for(i = 0; json != undefined && i < json.length; i++){
-	      list_codeforces.push({
-	          "x": json[i].ratingUpdateTimeSeconds,
-	          "y": json[i].newRating
-	      });
+    if(history['codeforces']){
+	var json = history['codeforces'].result;
+	line['codeforces'] = [];
+	for(i = 0; i < json.length; i++){
+	    line['codeforces'].push({
+		"x": json[i].ratingUpdateTimeSeconds,
+		"y": json[i].newRating
+	    });
+	}
     }
 
-    if(history_atcoder != undefined)
-	      json = history_atcoder;
-    else json = undefined;
-    for(i = 0; json != undefined && i < json.length; i++){
-	      if(!json[i]['IsRated']) continue;
-	      var tmp = json[i]['EndTime'].replace(/\./g,"/");
-        list_atcoder.push({
-	          "x": new Date(tmp).getTime() / 1000,
-	          "y": json[i]['NewRating'] / 1.0
-	      });
+    if(history['atcoder']){
+	var json = history['atcoder'];
+	line['atcoder'] = [];
+	for(i = 0; i < json.length; i++){
+	    if(!json[i]['IsRated']) continue;
+	    var tmp = json[i]['EndTime'].replace(/\./g,"/");
+            line['atcoder'].push({
+		"x": new Date(tmp).getTime() / 1000,
+		"y": json[i]['NewRating'] / 1.0
+	    });
+	}
     }
 
-    if(!true){
-	      document.getElementById("rating_topcoder"  ).innerHTML = list_topcoder;
-	      document.getElementById("rating_codeforces").innerHTML = list_codeforces;
-	      document.getElementById("rating_atcoder"   ).innerHTML = list_atcoder;
+    var minx, maxx;
+    for (cite in line)
+	if(line[cite].length > 0)
+	    minx = maxx = line[cite][0].x;
+
+    for (cite in line){
+	for (point of line[cite]){
+	    if(minx > point.x) minx = point.x;
+	    if(maxx < point.x) maxx = point.x;
+	}
     }
 
-    if(list_topcoder.length != 0){
-	      minx = list_topcoder[0].x;
-	      maxx = list_topcoder[0].x;
-    }else if(list_codeforces.length != 0){
-	      minx = list_codeforces[0].x;
-	      maxx = list_codeforces[0].x;
-    }else if(list_atcoder.length != 0){
-	      minx = list_atcoder[0].x;
-	      maxx = list_atcoder[0].x;
-    }else{
-	      return;
-    }
-
-    getRange(list_topcoder);
-    getRange(list_codeforces);
-    getRange(list_atcoder);
-
-    if(!true){
-	      alert(minx);
-	      alert(maxx);
-	      alert(miny);
-	      alert(maxy);
-    }
-
+    var w = 400, h = 300;
     var svg = d3.select("#graphs")
-	      .append("svg")
-	      .attr("id", "svg1")
-	      .attr("width", w)
-	      .attr("height", h);
+	.append("svg")
+	.attr("id", "svg1")
+	.attr("width", w)
+	.attr("height", h);
 
     svg.append("rect")
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("fill", "white");
 
-    drawGraph(list_topcoder  , svg, "red");
-    drawGraph(list_codeforces, svg, "blue");
-    drawGraph(list_atcoder   , svg, "green");
+    function drawGraph(list, color){
+	if(list.length < 2) return;
 
-    list_topcoder = [];
-    list_codeforces = [];
-    list_atcoder = [];
+	list.sort(function(a, b){
+	    return a.x - b.x;
+	});
+
+	var miny, maxy;
+	miny = maxy = list[0].y;
+	for(point of list){
+	    if(miny > point.y) miny = point.y;
+	    if(maxy < point.y) maxy = point.y;
+	}
+
+	var line = d3.svg.line()
+	    .x(function(d){return w * (d.x - minx) / (maxx - minx);})
+	    .y(function(d){return h * (1.0 - (d.y - miny) / (maxy - miny));});
+
+	svg.append("path")
+	    .attr("d",line(list))
+	    .attr("stroke",color)
+	    .attr("stroke-width",1)
+	    .attr("fill","none");
+    }
+
+    var colors = new Map();
+    colors['topcoder']   = 'red';
+    colors['codeforces'] = 'blue';
+    colors['atcoder']    = 'green';
+
+    for (cite in line)
+	drawGraph(line[cite], colors[cite]);
+
+    line = new Map();
 
     var source = (new XMLSerializer()).serializeToString(d3.select('#svg1').node());
     var canvas = $('<canvas>').get(0);
@@ -207,249 +159,159 @@ function drawGraphs(){
         .attr("href", png);
 }
 
-function getRange(list){
-    list.sort(function(a,b){
-	      return a.x-b.x;
-    });
-    for(i = 0; i < list.length; i++){
-	      if(minx > list[i].x) minx = list[i].x;
-	      if(maxx < list[i].x) maxx = list[i].x;
-    }
-}
-
-function drawGraph(list, svg, color){
-    if(list == undefined || list == null || list.length < 2) return;
-
-
-    miny = list[0].y;
-    maxy = list[0].y;
-
-    for(i = 0; i < list.length; i++){
-	      if(miny > list[i].y) miny = list[i].y;
-	      if(maxy < list[i].y) maxy = list[i].y;
-    }
-
-    var line = d3.svg.line()
-	      .x(function(d){return w * (d.x - minx) / (maxx - minx);})
-	      .y(function(d){return h * (1.0 - (d.y - miny) / (maxy - miny));});
-
-    svg.append("path")
-	      .attr("d",line(list))
-	      .attr("stroke",color)
-	      .attr("stroke-width",1)
-	      .attr("fill","none");
-
-}
-
-function getSolved(){
-    solved_topcoder   = -1;
-    solved_codeforces = -1;
-    solved_atcoder    = -1;
-    solved_aoj        = -1;
-    solved_yukicoder  = -1;
-    getSolvedTC();
-    getSolvedCF();
-    getSolvedAC();
-    getSolvedAOJ();
-    getSolvedYC();
-    drawTable();
-}
-
-function getSolvedTC(){
-    var handle = document.getElementById("handle_topcoder").value;
-    if(handle == ""){
-	      solved_topcoder = 0;
-	      drawTable();
-	      return;
-    }
-    var url =
+function getSolvedUrl(cite, handle){
+    if(cite == "topcoder")
+	return
         "https://api.topcoder.com/v2/users/"
         + handle
         + "/statistics/data/srm";
-    getJson(url).done(function(data){
-	      solved_topcoder = 0;
-	      var div1 = data["Divisions"]["Division I" ]["Level Total"];
-	      var div2 = data["Divisions"]["Division II"]["Level Total"];
-	      solved_topcoder += div1["submitted"];
-	      solved_topcoder -= div1["failedChallenge"];
-	      solved_topcoder -= div1["failedSys.Test"];
-	      solved_topcoder += div2["submitted"];
-	      solved_topcoder -= div2["failedChallenge"];
-	      solved_topcoder -= div2["failedSys.Test"];
-	  }).fail(function(data){
-	      alert("Failed(TC)");
-	      solved_topcoder = 0;
-	  }).always(function(data){
-	      drawTable();
-    });
-}
 
-function getSolvedCF(){
-    var handle = document.getElementById("handle_codeforces").value;
-    if(handle == ""){
-	      solved_codeforces = 0;
-	      drawTable();
-	      return;
-    }
-    var url = "https://codeforces.com/api/user.status?handle=" + handle;
-    getJson(url).done(function(data){
-	      if(data.result==null){
-		        solved_codeforces = 0;
-		        drawTable();
-            return;
-	      }
-	      var json = data.result;
-	      var problems = {};
-	      solved_codeforces = 0;
-	      for(var i = 0; i < json.length; i++){
-		        if(json[i].verdict != "OK" ||
-		           json[i].testset != "TESTS" )  continue;
+    if(cite == "codeforces")
+	return "https://codeforces.com/api/user.status?handle=" + handle;
 
-		        var prob = json[i].problem;
-		        if(problems[prob.contestId] != undefined){
-		            if(problems[prob.contestId][prob.name] == undefined){
-			              problems[prob.contestId][prob.name] = 1;
-			              solved_codeforces += 1;
-		            }
-		        }else{
-		            problems[prob.contestId] = {};
-		            problems[prob.contestId][prob.name] = 1;
-		            solved_codeforces += 1;
-		        }
-	      }
-	  }).fail(function(data){
-        alert("Failed(CF)");
-	      solved_codeforces = 0;
-	  }).always(function(data){
-	      drawTable();
-    });
-}
-function getSolvedAC(){
-    var handle = document.getElementById("handle_atcoder").value;
-    if(handle == ""){
-	      solved_atcoder = 0;
-	      drawTable();
-	      return;
-    }
-    var url =
-        "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user="
+    if(cite == "atcoder")
+	return "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user="
         + handle;
-    getJson(url).done(function(data){
-        solved_atcoder = data.accepted_count;
-	  }).fail(function(data){
-		    alert("Failed(AC)");
-	      solved_atcoder = 0;
-	  }).always(function(data){
-	      drawTable();
-    });
-}
-function getSolvedAOJ(){
-    var handle = document.getElementById("handle_aoj").value;
-    if(handle == ""){
-	      solved_aoj = 0;
-	      drawTable();
-	      return;
-    }
-    var url = "https://judgeapi.u-aizu.ac.jp/users/" + handle;
-    getJson(url).done(function(data){
-	      solved_aoj = data.status.solved;
-	  }).fail(function(data){
-		    alert("Failed(AOJ)");
-	      solved_aoj = 0;
-	  }).always(function(data){
-	      drawTable();
-    });
+
+    if(cite == "aoj")
+	return "https://judgeapi.u-aizu.ac.jp/users/" + handle;
+
+    if(cite == "yukicoder")
+	return "https://yukicoder.me/api/v1/user/name/" + encodeURIComponent(handle);
 }
 
-function getSolvedYC(){
-    var handle = document.getElementById("handle_yukicoder").value;
-    if(handle == ""){
-	      solved_yukicoder = 0;
-	      drawTable();
-	      return;
+function unwrap(data, cite){
+    if(cite == "topcoder"){
+	var res = 0;
+	var div1 = data["Divisions"]["Division I" ]["Level Total"];
+	var div2 = data["Divisions"]["Division II"]["Level Total"];
+	res += div1["submitted"];
+	res -= div1["failedChallenge"];
+	res -= div1["failedSys.Test"];
+	res += div2["submitted"];
+	res -= div2["failedChallenge"];
+	res -= div2["failedSys.Test"];
+	return res;
     }
-    var url =
-        "https://yukicoder.me/api/v1/user/name/"
-        + encodeURIComponent(handle);
-    getJson(url).done(function(data){
-	      solved_yukicoder = data.Solved;
-	  }).fail(function(data){
-        alert("Failed(YC)");
-	      solved_yukicoder = 0;
-	  }).always(function(data){
-	      drawTable();
-    });
+
+    if(cite == "codeforces"){
+	if(data.result == null)
+            return 0;
+
+	var json = data.result;
+	var problems = {};
+	var res = 0;
+	for(var i = 0; i < json.length; i++){
+	    if(json[i].verdict != "OK" ||
+	       json[i].testset != "TESTS" )  continue;
+
+	    var prob = json[i].problem;
+	    if(problems[prob.contestId] != undefined){
+		if(problems[prob.contestId][prob.name] == undefined){
+		    problems[prob.contestId][prob.name] = 1;
+		    res += 1;
+		}
+	    }else{
+		problems[prob.contestId] = {};
+		problems[prob.contestId][prob.name] = 1;
+		res += 1;
+	    }
+	}
+	return res;
+    }
+
+    if(cite == "atcoder")
+	return data.accepted_count;
+
+    if(cite == "aoj")
+	return data.status.solved;
+
+    if(cite == "yukicoder")
+	return data.Solved;
 }
 
+function ushitapnichiakun(retry){
+    var cite = "librarychecker";
+    var handle = getHandle(cite);
+    if(retry < 0){
+	alert("Failed: " + cite);
+	solved[cite] = 0;
+	num++;
+	drawTable();
+    }
+    if(libraryCheckerResult){
+	solved[cite] = 0;
+	for (entry of libraryCheckerResult)
+	    if(entry["array"][0] == handle)
+		solved[cite] = entry["array"][1];
+	num++;
+	drawTable();
+	return;
+    }
+    setTimeout(ushitapnichiakun, retry - 1, 1000);
+}
+
+function getSolved(cite){
+    var handle = getHandle(cite);
+    if(handle == ""){
+	solved[cite] = 0;
+	num++;
+	drawTable();
+	return;
+    }
+
+    if(cite == "librarychecker"){
+	ushitapnichiakun(10);
+	return;
+    }
+
+    var url = getSolvedUrl(cite, handle);
+    getJson(url).done(function(data){
+	solved[cite] = unwrap(data, cite);
+    }).fail(function(data){
+        alert("Failed: " + cite);
+	solved[cite] = 0;
+    }).always(function(data){
+	num++;
+	drawTable();
+    });
+}
 
 function drawTable(){
-    if(solved_topcoder   < 0 ||
-       solved_codeforces < 0 ||
-       solved_atcoder    < 0 ||
-       solved_yukicoder  < 0 ||
-       solved_aoj        < 0 ) return;
+    if(num < onlinejudge.length) return;
 
-    if(solved_topcoder   == undefined ||
-       solved_topcoder   == null) solved_topcoder = 0;
-    if(solved_codeforces == undefined ||
-       solved_codeforces == null) solved_codeforces = 0;
-    if(solved_atcoder    == undefined ||
-       solved_atcoder    == null) solved_atcoder = 0;
-    if(solved_aoj        == undefined ||
-       solved_aoj        == null) solved_aoj = 0;
-    if(solved_yukicoder  == undefined ||
-       solved_yukicoder  == null) solved_yukicoder = 0;
+    show = [];
+    solved['sum'] = 0;
+    for (cite of onlinejudge){
+	show.push(cite);
+	solved[cite] *= 1.0;
+	solved['sum'] += solved[cite];
+    }
+    show.push('sum');
 
-    solved_topcoder *= 1.0;
-    solved_codeforces *= 1.0;
-    solved_atcoder *= 1.0;
-    solved_aoj *= 1.0;
-    solved_yukicoder *= 1.0;
+    function display(cite){
+	if(cite == 'topcoder') return "Topcoder";
+	if(cite == 'codeforces') return "CodeForces";
+	if(cite == 'atcoder') return "AtCoder";
+	if(cite == 'aoj') return "AOJ";
+	if(cite == 'yukicoder') return "yukicoder";
+	if(cite == 'librarychecker') return "library-checker";
+	if(cite == 'sum') return "Sum";
+    }
 
-    solved_sum = 0;
-    solved_sum += solved_topcoder;
-    solved_sum += solved_codeforces;
-    solved_sum += solved_atcoder;
-    solved_sum += solved_yukicoder;
-    solved_sum += solved_aoj;
+    var table = "Solved: " + "<table border=\"1px\">";
+    for (cite of show){
+	table += "<tr><td>" + display(cite) + "</td>"
+	table += "<td align=\"right\">" + solved[cite] + "</td></tr>";
+    }
+    table += "</tr></table>";
+    document.getElementById("solved").innerHTML = table;
 
-    document.getElementById("solved").innerHTML =
-	      "Solved: "
-	      +"<table border=\"1px\">"
-	      +"<tr>"
-	      +"<td>" + "TopCoder"        + "</td>"
-	      +"<td align=\"right\">" + solved_topcoder   + "</td>"
-	      +"</tr>"
-	      +"<tr>"
-	      +"<td>" + "CodeForces"      + "</td>"
-	      +"<td align=\"right\">" + solved_codeforces + "</td>"
-	      +"</tr>"
-	      +"<tr>"
-	      +"<td>" + "AtCoder"         + "</td>"
-	      +"<td align=\"right\">" + solved_atcoder    + "</td>"
-	      +"</tr>"
-	      +"<tr>"
-	      +"<td>" + "AOJ"             + "</td>"
-	      +"<td align=\"right\">" + solved_aoj        + "</td>"
-	      +"</tr>"
-	      +"<tr>"
-	      +"<td>" + "yukicoder"       + "</td>"
-	      +"<td align=\"right\">" + solved_yukicoder  + "</td>"
-	      +"</tr>"
-	      +"<tr>"
-	      +"<td>" + "Sum"             + "</td>"
-	      +"<td align=\"right\">" + solved_sum        + "</td>"
-	      +"</tr>"
-	      +"</table>";
-    var tweet = "";
     var handle = document.getElementById("select_handle").value;
-    tweet += "Solved By " + handle + "\n";
-    tweet += "TopCoder: " + solved_topcoder + "\n";
-    tweet += "CodeForces: " + solved_codeforces + "\n";
-    tweet += "AtCoder: " + solved_atcoder + "\n";
-    tweet += "AOJ: " + solved_aoj + "\n";
-    tweet += "yukicoder: " + solved_yukicoder + "\n";
-    tweet += "Sum: " + solved_sum + "\n";
+    var tweet = "Solved By " + handle + "\n";
+    for (cite of show)
+	tweet += display(cite) + ": " + solved[cite] + "\n";
+
     $.fn.appendTweetButton = function(url, text){
         $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
     }
@@ -457,15 +319,25 @@ function drawTable(){
     $("#tweet").appendTweetButton($(location).attr('href'), tweet);
 }
 
+function getData(){
+    d3.select("#graphs").selectAll("svg").remove();
+    history = new Map();
+    line = new Map();
+    cnt = 0;
+
+    for (cite of rated)
+	getHistory(cite);
+
+    solved = new Map();
+    num = 0;
+    for (cite of onlinejudge)
+	getSolved(cite);
+}
+
 function updateSelecter(){
     $('#select_handle > option').remove();
-    list = ["handle_topcoder",
-            "handle_codeforces",
-            "handle_atcoder",
-            "handle_aoj",
-            "handle_yukicoder"];
-    list.forEach(function(v){
-        s = document.getElementById(v).value;
+    onlinejudge.forEach(function(v){
+        s = document.getElementById("handle_" + v).value;
         if(s != "" && $("#select_handle option[value='"+s+"']").length == 0)
             $('#select_handle').append($('<option>')
                                        .html(s)
@@ -486,38 +358,19 @@ $(document).ready(function(){
         }
     }
 
-    if(result["handle_topcoder"])
-	      document.wrapper.handle_topcoder.value   = result["handle_topcoder"];
-    if(result["handle_codeforces"])
-	      document.wrapper.handle_codeforces.value = result["handle_codeforces"];
-    if(result["handle_atcoder"])
-	      document.wrapper.handle_atcoder.value    = result["handle_atcoder"];
-    if(result["handle_aoj"])
-	      document.wrapper.handle_aoj.value        = result["handle_aoj"];
-    if(result["handle_yukicoder"])
-	      document.wrapper.handle_yukicoder.value  = result["handle_yukicoder"];
+    for(cite of onlinejudge)
+	if(result["handle_" + cite])
+	    document.wrapper["handle_" + cite].value   = result["handle_" + cite];
 
     updateSelecter();
-    list = ["#handle_topcoder",
-            "#handle_codeforces",
-            "#handle_atcoder",
-            "#handle_aoj",
-            "#handle_yukicoder"];
-
-    list.forEach(function(v){
-        $(v).change(function(){
+    onlinejudge.forEach(function(v){
+        $("#" + v).change(function(){
             updateSelecter();
         });
     });
 
     if(result["select_handle"])
-	      $('#select_handle').val(result["select_handle"]);
-
-    solved_topcoder   = -1;
-    solved_codeforces = -1;
-    solved_atcoder    = -1;
-    solved_aoj        = -1;
-    solved_yukicoder  = -1;
+	$('#select_handle').val(result["select_handle"]);
 
     getData();
 });

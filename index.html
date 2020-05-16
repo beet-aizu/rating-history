@@ -15,6 +15,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+    <script>var libraryCheckerResult = undefined;</script>
+    <script src="main.js"></script>
     <script src="request.js"></script>
     <style>
       svg { border: 1px solid black; }
@@ -24,15 +26,17 @@
     <h1>Rating History</h1>
     <form action="./index.html" method="get" name="wrapper">
       <font color="red">TopCoder ID:</font>
-      <input type="text" id="handle_topcoder"   name="handle_topcoder"><br>
+      <input type="text" id="handle_topcoder"       name="handle_topcoder"><br>
       <font color="blue">CodeForces ID:</font>
-      <input type="text" id="handle_codeforces" name="handle_codeforces"><br>
+      <input type="text" id="handle_codeforces"     name="handle_codeforces"><br>
       <font color="green">AtCoder ID:</font>
-      <input type="text" id="handle_atcoder"    name="handle_atcoder"><br>
+      <input type="text" id="handle_atcoder"        name="handle_atcoder"><br>
       <font color="black">AOJ ID:</font>
-      <input type="text" id="handle_aoj"        name="handle_aoj"><br>
+      <input type="text" id="handle_aoj"            name="handle_aoj"><br>
       <font color="black">yukicoder ID:</font>
-      <input type="text" id="handle_yukicoder"  name="handle_yukicoder"><br>
+      <input type="text" id="handle_yukicoder"      name="handle_yukicoder"><br>
+      <font color="black">library-checker ID:</font>
+      <input type="text" id="handle_librarychecker" name="handle_librarychecker"><br>
       ID for tweet:
       <select id="select_handle" name="select_handle"></select><br>
       <input type="submit" value="send">
