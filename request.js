@@ -161,8 +161,7 @@ function drawGraphs(){
 
 function getSolvedUrl(cite, handle){
     if(cite == "topcoder")
-	return
-        "https://api.topcoder.com/v2/users/"
+	return "https://api.topcoder.com/v2/users/"
         + handle
         + "/statistics/data/srm";
 
