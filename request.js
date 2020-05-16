@@ -1,8 +1,255 @@
-var rated = ["topcoder", "codeforces", "atcoder"];
-var history, line, cnt;
+class topcoder{
+    constructor(){
+	this.data = undefined;
+	this.solved = 0;
+    }
+    get name(){
+	return "topcoder";
+    }
+    get displayName(){
+	return "Topcoder";
+    }
+    get handle(){
+	return document.getElementById("handle_" + this.name).value;
+    }
+    get rated(){
+	return true;
+    }
+    get historyUrl(){
+	return "https://api.topcoder.com/v2/users/"
+            + this.handle
+            + "/statistics/data/srm";
+    }
+    setData(data){
+	this.data = data;
+    }
+    get line(){
+	var json = this.data.History;
+	var line = [];
+	for(var i = 0; i < json.length; i++){
+	    var tmp = json[i].date.replace(/\./g,"/");
+	    line.push({
+		"x": new Date(tmp).getTime() / 1000,
+		"y": json[i].rating
+	    });
+	}
+	return line;
+    }
+    get color(){
+	return "red";
+    }
+    get solvedUrl(){
+	return "https://api.topcoder.com/v2/users/"
+        + this.handle
+        + "/statistics/data/srm";
+    }
+    unwrap(data){
+	var res = 0;
+	var div1 = data["Divisions"]["Division I" ]["Level Total"];
+	var div2 = data["Divisions"]["Division II"]["Level Total"];
+	res += div1["submitted"];
+	res -= div1["failedChallenge"];
+	res -= div1["failedSys.Test"];
+	res += div2["submitted"];
+	res -= div2["failedChallenge"];
+	res -= div2["failedSys.Test"];
+	return res;
+    }
+}
 
-var onlinejudge = ["topcoder", "codeforces", "atcoder", "aoj", "yukicoder", "librarychecker"];
-var solved, num;
+class codeforces{
+    constructor(){
+	this.data = undefined;
+	this.solved = 0;
+    }
+    get name(){
+	return "codeforces";
+    }
+    get displayName(){
+	return "Codeforces";
+    }
+    get handle(){
+	return document.getElementById("handle_" + this.name).value;
+    }
+    get rated(){
+	return true;
+    }
+    get historyUrl(){
+	return "https://codeforces.com/api/user.rating?handle=" + this.handle;
+    }
+    setData(data){
+	this.data = data;
+    }
+    get line(){
+	var json = this.data.result;
+	var line = [];
+	for(var i = 0; i < json.length; i++){
+	    line.push({
+		"x": json[i].ratingUpdateTimeSeconds,
+		"y": json[i].newRating
+	    });
+	}
+	return line;
+    }
+    get color(){
+	return "blue";
+    }
+    get solvedUrl(){
+	return "https://codeforces.com/api/user.status?handle=" + this.handle;
+    }
+    unwrap(data){
+	if(data.result == null)
+            return 0;
+
+	var json = data.result;
+	var problems = {};
+	var res = 0;
+	for(var i = 0; i < json.length; i++){
+	    if(json[i].verdict != "OK" ||
+	       json[i].testset != "TESTS" )  continue;
+
+	    var prob = json[i].problem;
+	    if(problems[prob.contestId] != undefined){
+		if(problems[prob.contestId][prob.name] == undefined){
+		    problems[prob.contestId][prob.name] = 1;
+		    res += 1;
+		}
+	    }else{
+		problems[prob.contestId] = {};
+		problems[prob.contestId][prob.name] = 1;
+		res += 1;
+	    }
+	}
+	return res;
+    }
+}
+
+class atcoder{
+    constructor(){
+	this.data = undefined;
+	this.solved = 0;
+    }
+    get name(){
+	return "atcoder";
+    }
+    get displayName(){
+	return "AtCoder";
+    }
+    get handle(){
+	return document.getElementById("handle_" + this.name).value;
+    }
+    get rated(){
+	return true;
+    }
+    get historyUrl(){
+	return "ajax.php?url=https://atcoder.jp/users/"
+        + this.handle
+        + "/history/json";
+    }
+    setData(data){
+	this.data = data;
+    }
+    get line(){
+	var json = this.data;
+	var line = [];
+	for(var i = 0; i < json.length; i++){
+	    if(!json[i]['IsRated']) continue;
+	    var tmp = json[i]['EndTime'].replace(/\./g,"/");
+            line.push({
+		"x": new Date(tmp).getTime() / 1000,
+		"y": json[i]['NewRating'] / 1.0
+	    });
+	}
+	return line;
+    }
+    get color(){
+	return "green";
+    }
+    get solvedUrl(){
+	return "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user="
+            + this.handle;
+    }
+    unwrap(data){
+	return data.accepted_count;
+    }
+}
+
+
+class aoj{
+    constructor(){
+	this.solved = 0;
+    }
+    get name(){
+	return "aoj";
+    }
+    get displayName(){
+	return "AOJ";
+    }
+    get handle(){
+	return document.getElementById("handle_" + this.name).value;
+    }
+    get rated(){
+	return false;
+    }
+    get solvedUrl(){
+	return "https://judgeapi.u-aizu.ac.jp/users/" + this.handle;
+    }
+    unwrap(data){
+	return data.status.solved;
+    }
+}
+
+class yukicoder{
+    constructor(){
+	this.solved = 0;
+    }
+    get name(){
+	return "yukicoder";
+    }
+    get displayName(){
+	return "yukicoder";
+    }
+    get handle(){
+	return document.getElementById("handle_" + this.name).value;
+    }
+    get rated(){
+	return false;
+    }
+    get solvedUrl(){
+	return "https://yukicoder.me/api/v1/user/name/"
+	    + encodeURIComponent(this.handle);
+    }
+    unwrap(data){
+	return data.Solved;
+    }
+}
+
+class librarychecker{
+    constructor(){
+	this.solved = 0;
+    }
+    get name(){
+	return "librarychecker";
+    }
+    get displayName(){
+	return "library-checker";
+    }
+    get handle(){
+	return document.getElementById("handle_" + this.name).value;
+    }
+    get rated(){
+	return false;
+    }
+}
+
+var onlinejudge = [];
+onlinejudge.push(new topcoder());
+onlinejudge.push(new codeforces());
+onlinejudge.push(new atcoder());
+onlinejudge.push(new aoj());
+onlinejudge.push(new yukicoder());
+onlinejudge.push(new librarychecker());
+var cnt, num;
 
 function getJson(url){
     return $.ajax(
@@ -14,90 +261,35 @@ function getJson(url){
 	});
 }
 
-function getHandle(cite){
-    return document.getElementById("handle_" + cite).value;
-}
-
-function getHistoryUrl(cite, handle){
-    if(cite == "topcoder")
-	return "https://api.topcoder.com/v2/users/"
-        + handle
-        + "/statistics/data/srm";
-
-    if(cite == "codeforces")
-	return "https://codeforces.com/api/user.rating?handle=" + handle;
-
-    if(cite == "atcoder")
-	return "ajax.php?url=https://atcoder.jp/users/"
-        + handle
-        + "/history/json";
-}
-
 function getHistory(cite){
-    var handle = getHandle(cite);
-    if(handle == ""){
-	cnt++;
+    if(cite.handle == ""){
+	cnt--;
 	drawGraphs();
 	return;
     }
-    var url = getHistoryUrl(cite, handle);
-    getJson(url).done(function(data){
-	history[cite] = data;
+    getJson(cite.historyUrl).done(function(data){
+	cite.setData(data);
     }).fail(function(data){
-	alert("Failed " + cite);
+	alert("Failed " + cite.name);
     }).always(function(data){
-        cnt++;
+        cnt--;
         drawGraphs();
     });
 }
 
 function drawGraphs(){
-    if(cnt < rated.length) return;
-    if(history.size == 0) return;
-
-    if(history['topcoder']){
-	var json = history['topcoder'].History;
-	line['topcoder'] = [];
-	for(i = 0; i < json.length; i++){
-	    var tmp = json[i].date.replace(/\./g,"/");
-	    line['topcoder'].push({
-		"x": new Date(tmp).getTime() / 1000,
-		"y": json[i].rating
-	    });
-	}
-    }
-
-    if(history['codeforces']){
-	var json = history['codeforces'].result;
-	line['codeforces'] = [];
-	for(i = 0; i < json.length; i++){
-	    line['codeforces'].push({
-		"x": json[i].ratingUpdateTimeSeconds,
-		"y": json[i].newRating
-	    });
-	}
-    }
-
-    if(history['atcoder']){
-	var json = history['atcoder'];
-	line['atcoder'] = [];
-	for(i = 0; i < json.length; i++){
-	    if(!json[i]['IsRated']) continue;
-	    var tmp = json[i]['EndTime'].replace(/\./g,"/");
-            line['atcoder'].push({
-		"x": new Date(tmp).getTime() / 1000,
-		"y": json[i]['NewRating'] / 1.0
-	    });
-	}
-    }
+    if(cnt > 0) return;
 
     var minx, maxx;
-    for (cite in line)
-	if(line[cite].length > 0)
-	    minx = maxx = line[cite][0].x;
+    for (cite of onlinejudge){
+	if(!cite.data) continue;
+	if(cite.line.length > 0)
+	    minx = maxx = cite.line[0].x;
+    }
 
-    for (cite in line){
-	for (point of line[cite]){
+    for (cite of onlinejudge){
+	if(!cite.data) continue;
+	for (point of cite.line){
 	    if(minx > point.x) minx = point.x;
 	    if(maxx < point.x) maxx = point.x;
 	}
@@ -140,15 +332,8 @@ function drawGraphs(){
 	    .attr("fill","none");
     }
 
-    var colors = new Map();
-    colors['topcoder']   = 'red';
-    colors['codeforces'] = 'blue';
-    colors['atcoder']    = 'green';
-
-    for (cite in line)
-	drawGraph(line[cite], colors[cite]);
-
-    line = new Map();
+    for (cite of onlinejudge)
+	if(cite.data) drawGraph(cite.line, cite.color);
 
     var source = (new XMLSerializer()).serializeToString(d3.select('#svg1').node());
     var canvas = $('<canvas>').get(0);
@@ -159,91 +344,26 @@ function drawGraphs(){
         .attr("href", png);
 }
 
-function getSolvedUrl(cite, handle){
-    if(cite == "topcoder")
-	return "https://api.topcoder.com/v2/users/"
-        + handle
-        + "/statistics/data/srm";
-
-    if(cite == "codeforces")
-	return "https://codeforces.com/api/user.status?handle=" + handle;
-
-    if(cite == "atcoder")
-	return "https://kenkoooo.com/atcoder/atcoder-api/v2/user_info?user="
-        + handle;
-
-    if(cite == "aoj")
-	return "https://judgeapi.u-aizu.ac.jp/users/" + handle;
-
-    if(cite == "yukicoder")
-	return "https://yukicoder.me/api/v1/user/name/" + encodeURIComponent(handle);
-}
-
-function unwrap(data, cite){
-    if(cite == "topcoder"){
-	var res = 0;
-	var div1 = data["Divisions"]["Division I" ]["Level Total"];
-	var div2 = data["Divisions"]["Division II"]["Level Total"];
-	res += div1["submitted"];
-	res -= div1["failedChallenge"];
-	res -= div1["failedSys.Test"];
-	res += div2["submitted"];
-	res -= div2["failedChallenge"];
-	res -= div2["failedSys.Test"];
-	return res;
-    }
-
-    if(cite == "codeforces"){
-	if(data.result == null)
-            return 0;
-
-	var json = data.result;
-	var problems = {};
-	var res = 0;
-	for(var i = 0; i < json.length; i++){
-	    if(json[i].verdict != "OK" ||
-	       json[i].testset != "TESTS" )  continue;
-
-	    var prob = json[i].problem;
-	    if(problems[prob.contestId] != undefined){
-		if(problems[prob.contestId][prob.name] == undefined){
-		    problems[prob.contestId][prob.name] = 1;
-		    res += 1;
-		}
-	    }else{
-		problems[prob.contestId] = {};
-		problems[prob.contestId][prob.name] = 1;
-		res += 1;
-	    }
-	}
-	return res;
-    }
-
-    if(cite == "atcoder")
-	return data.accepted_count;
-
-    if(cite == "aoj")
-	return data.status.solved;
-
-    if(cite == "yukicoder")
-	return data.Solved;
-}
-
 function ushitapnichiakun(retry){
-    var cite = "librarychecker";
-    var handle = getHandle(cite);
+    var cite;
+    for (cand of onlinejudge)
+	if (cand.name == "librarychecker")
+	    cite = cand;
+
     if(retry < 0){
-	alert("Failed: " + cite);
-	solved[cite] = 0;
-	num++;
+	alert("Failed: " + cite.name);
+	cite.solved = 0;
+	num--;
 	drawTable();
     }
+
+    var handle = cite.handle;
     if(libraryCheckerResult){
 	solved[cite] = 0;
 	for (entry of libraryCheckerResult)
 	    if(entry["array"][0] == handle)
-		solved[cite] = entry["array"][1];
-	num++;
+		cite.solved = entry["array"][1];
+	num--;
 	drawTable();
 	return;
     }
@@ -251,65 +371,50 @@ function ushitapnichiakun(retry){
 }
 
 function getSolved(cite){
-    var handle = getHandle(cite);
-    if(handle == ""){
-	solved[cite] = 0;
-	num++;
+    if(cite.handle == ""){
+	num--;
 	drawTable();
 	return;
     }
 
-    if(cite == "librarychecker"){
+    if(cite.name == "librarychecker"){
 	ushitapnichiakun(10);
 	return;
     }
 
-    var url = getSolvedUrl(cite, handle);
-    getJson(url).done(function(data){
-	solved[cite] = unwrap(data, cite);
+    getJson(cite.solvedUrl).done(function(data){
+	cite.solved = cite.unwrap(data);
     }).fail(function(data){
-        alert("Failed: " + cite);
-	solved[cite] = 0;
+        alert("Failed: " + cite.name);
     }).always(function(data){
-	num++;
+	num--;
 	drawTable();
     });
 }
 
 function drawTable(){
-    if(num < onlinejudge.length) return;
+    if(num > 0) return;
 
-    show = [];
-    solved['sum'] = 0;
-    for (cite of onlinejudge){
-	show.push(cite);
-	solved[cite] *= 1.0;
-	solved['sum'] += solved[cite];
-    }
-    show.push('sum');
-
-    function display(cite){
-	if(cite == 'topcoder') return "Topcoder";
-	if(cite == 'codeforces') return "CodeForces";
-	if(cite == 'atcoder') return "AtCoder";
-	if(cite == 'aoj') return "AOJ";
-	if(cite == 'yukicoder') return "yukicoder";
-	if(cite == 'librarychecker') return "library-checker";
-	if(cite == 'sum') return "Sum";
-    }
-
+    var sum = 0;
     var table = "Solved: " + "<table border=\"1px\">";
-    for (cite of show){
-	table += "<tr><td>" + display(cite) + "</td>"
-	table += "<td align=\"right\">" + solved[cite] + "</td></tr>";
+    for (cite of onlinejudge){
+	sum += cite.solved * 1.0;
+	table += "<tr><td>" + cite.displayName + "</td>"
+	table += "<td align=\"right\">" + cite.solved + "</td></tr>";
     }
+
+    table += "<tr><td>Sum</td>"
+    table += "<td align=\"right\">" + sum + "</td></tr>";
+
     table += "</tr></table>";
+
     document.getElementById("solved").innerHTML = table;
 
     var handle = document.getElementById("select_handle").value;
     var tweet = "Solved By " + handle + "\n";
-    for (cite of show)
-	tweet += display(cite) + ": " + solved[cite] + "\n";
+    for (cite of onlinejudge)
+	tweet += cite.displayName + ": " + cite.solved + "\n";
+    tweet +=  "Sum: " + sum + "\n";
 
     $.fn.appendTweetButton = function(url, text){
         $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
@@ -318,25 +423,10 @@ function drawTable(){
     $("#tweet").appendTweetButton($(location).attr('href'), tweet);
 }
 
-function getData(){
-    d3.select("#graphs").selectAll("svg").remove();
-    history = new Map();
-    line = new Map();
-    cnt = 0;
-
-    for (cite of rated)
-	getHistory(cite);
-
-    solved = new Map();
-    num = 0;
-    for (cite of onlinejudge)
-	getSolved(cite);
-}
-
 function updateSelecter(){
     $('#select_handle > option').remove();
     onlinejudge.forEach(function(v){
-        s = document.getElementById("handle_" + v).value;
+        s = document.getElementById("handle_" + v.name).value;
         if(s != "" && $("#select_handle option[value='"+s+"']").length == 0)
             $('#select_handle').append($('<option>')
                                        .html(s)
@@ -358,12 +448,12 @@ $(document).ready(function(){
     }
 
     for(cite of onlinejudge)
-	if(result["handle_" + cite])
-	    document.wrapper["handle_" + cite].value   = result["handle_" + cite];
+	if(result["handle_" + cite.name])
+	    document.wrapper["handle_" + cite.name].value = result["handle_" + cite.name];
 
     updateSelecter();
     onlinejudge.forEach(function(v){
-        $("#" + v).change(function(){
+        $("#" + v.name).change(function(){
             updateSelecter();
         });
     });
@@ -371,5 +461,17 @@ $(document).ready(function(){
     if(result["select_handle"])
 	$('#select_handle').val(result["select_handle"]);
 
-    getData();
+    d3.select("#graphs").selectAll("svg").remove();
+
+    cnt = 0;
+    for (cite of onlinejudge)
+	if(cite.rated) cnt += 1.0;
+
+    for (cite of onlinejudge)
+	if(cite.rated)
+	    getHistory(cite);
+
+    num = onlinejudge.length;
+    for (cite of onlinejudge)
+	getSolved(cite);
 });
