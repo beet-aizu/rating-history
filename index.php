@@ -2,23 +2,23 @@
 <html>
   <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-141121686-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141121686-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-  gtag('config', 'UA-141121686-1');
-</script>
+      gtag('config', 'UA-141121686-1');
+    </script>
     <meta charset="utf-8">
     <title>Index</title>
   </head>
   <body>
-       <a href="./index.html"> Rating History </a> <br>
-       <a href="./average.html"> AtCoder Average </a> <br>
-       <a href="./setter.html"> Problem Setter </a> <br>
-       <a href="./icpc.html"> AOJ-ICPC Comparator </a> <br>
-       <a href="./beetbeet.html"> ??? </a> <br>
+    <a href="./index.html"> Rating History </a> <br>
+    <a href="./average.html"> AtCoder Average </a> <br>
+    <a href="./setter.html"> Problem Setter </a> <br>
+    <a href="./icpc.html"> AOJ-ICPC Comparator </a> <br>
+    <a href="./beetbeet.html"> ??? </a> <br>
 
     <br>
     プライバシー ポリシー:<br>
@@ -26,5 +26,6 @@
     Google アナリティクスを使用しています<br>
     詳しくは　<a href="https://policies.google.com/technologies/partner-sites?hl=ja">こちら</a><br>
 
+    <a href="https://github.com/beet-aizu/rating-history"> GitHub Repository </a> <br>
   </body>
 </html>
