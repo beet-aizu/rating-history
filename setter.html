@@ -20,13 +20,13 @@
 
       function getJson(url){
           return $.ajax(
-	            {
-		              type     : 'GET',
-		              url      : url,
-		              dataType : 'json',
-		              timeout  : 20000,
-		              cache    : false,
-	            });
+	      {
+		  type     : 'GET',
+		  url      : url,
+		  dataType : 'json',
+		  timeout  : 20000,
+		  cache    : false,
+	      });
       }
 
       function Update(){
@@ -34,7 +34,7 @@
           point_from = document.getElementById("from").value;
           point_to = document.getElementById("to").value;
           getJson(url).done(function(data){
-	            tmp = data.filter(function(item, index){
+	      tmp = data.filter(function(item, index){
                   return (item.point &&
                           point_from <= item.point &&
                           item.point <= point_to);
@@ -51,9 +51,9 @@
                       .text(e.title).appendTo('#list');
                   $('<br>').appendTo('#list');
               }
-	        }).fail(function(data){
+	  }).fail(function(data){
               alert("Failed");
-	        });
+	  });
       }
 
       $(document).ready(function(){
@@ -81,6 +81,8 @@
       <br>
     </form>
     <div id="list"></div>
+
+    <br> <a href="./index.php"> Top </a> <br>
     <br>
     プライバシー ポリシー:<br>
     データ収集のために Cookie を使用しています<br>
