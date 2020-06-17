@@ -1,2 +1,3 @@
 #!/bin/bash
-git remote add heroku git@heroku.com:rating-history.git
+heroku login
+heroku git:remote -a rating-history -r heroku
