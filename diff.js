@@ -45,19 +45,19 @@ $(function(){
             var isRated = data[i].IsRated;
             var date = data[i].EndTime;
             var name = data[i].ContestName;
-	    var diff = data[i].NewRating - data[i].OldRating;
+	    var diff = parseInt(data[i].NewRating) - parseInt(data[i].OldRating);
             if(new Date(date) < dt) continue;
 
-            if(isRated) sum0 += parseInt(perf);
+            if(isRated) sum0 += diff;
 
             if(name.indexOf("Grand Contest") != -1) {
-                if(isRated) sum1 += parseInt(perf);
+                if(isRated) sum1 += diff;
             } else if(name.indexOf("Regular Contest") != -1) {
-                if(isRated) sum2 += parseInt(perf);
+                if(isRated) sum2 += diff;
             } else if(name.indexOf("Beginner Contest") != -1) {
-                if(isRated) sum3 += parseInt(perf);
+                if(isRated) sum3 += diff;
             } else {
-                if(isRated) sum4 += parseInt(perf);
+                if(isRated) sum4 += diff;
             }
         }
 
