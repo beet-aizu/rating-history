@@ -67,12 +67,12 @@ $(function(){
         $("#now_abc").text(sum3);
         $("#now_oth").text(sum4);
 
-        var tweet = "あなたのレートはどこから？\n私は";
+        var tweet = "あなたのレートはどこから？\n私は\n";
         tweet += "AGC: " + $("#now_agc").text() + "\n";
         tweet += "ARC: " + $("#now_arc").text() + "\n";
         tweet += "ABC: " + $("#now_abc").text() + "\n";
         tweet += "Other: " + $("#now_oth").text() + "\n";
-        if(lattemalta != 1333) tweet += "(直近"+lattemalta+"ヶ月)";
+        if(lattemalta != 1333) tweet += "(直近"+lattemalta+"ヶ月)\n";
         $.fn.appendTweetButton = function(url, text){
             $(this).append($("<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\""+url+"\" data-text=\""+text+"\" data-count=\"vertical\">Tweet<\/a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');<\/script>"));
         };
