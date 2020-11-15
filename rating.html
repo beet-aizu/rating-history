@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141121686-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-141121686-1');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>Where does your rating come from?</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="diff.js"></script>
+  </head>
+  <body>
+    <main>
+      <section>
+        <h2>あなたのレートはどこから？</h2>
+        <p>ABC, ARC, AGC それぞれのレートへの寄与を求めます。</p>
+
+        <form method="get">
+          handle: <input type="text" id="handle" name="handle"><br>
+          直近(空欄=inf): <input type="number" id="number" name="number"> ヶ月<br>
+          <input type="submit" value="send">
+        </form>
+
+        <h4>結果</h4>
+        <ul>
+          <li>All: <b><span id="now_all">Loading...</span></b>
+          <li>AGC: <b><span id="now_agc">Loading...</span></b>
+          <li>ARC: <b><span id="now_arc">Loading...</span></b>
+          <li>ABC: <b><span id="now_abc">Loading...</span></b>
+          <li>Other: <b><span id="now_oth">Loading...</span></b>
+        </ul>
+      </section>
+    </main>
+    <div>
+    </div>
+    <br> <a href="./index.php"> Top </a> <br>
+    <br>
+    プライバシー ポリシー:<br>
+    データ収集のために Cookie を使用しています<br>
+    Google アナリティクスを使用しています<br>
+    詳しくは　<a href="https://policies.google.com/technologies/partner-sites?hl=ja">こちら</a><br>
+  </body>
+</html>

@@ -16,6 +16,7 @@
   <body>
     <a href="./index.html"> Rating History </a> <br>
     <a href="./average.html"> AtCoder Average </a> <br>
+    <a href="./rating.html"> Where does your rating come from? </a> <br>
     <a href="./setter.html"> Problem Setter </a> <br>
     <a href="./icpc.html"> AOJ-ICPC Comparator </a> <br>
     <a href="./beetbeet.html"> ??? </a> <br>
